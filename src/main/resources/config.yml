@@ -10,3 +10,5 @@ lowerMSPTThreshold: 50.0
 upperMSPTThreshold: 60.0
 #the time in seconds between each update
 updateInterval: 60
+#time in seconds for the rolling average to be calculated over
+averageMSPTInterval: 60
