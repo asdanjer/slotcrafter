@@ -1,0 +1,5 @@
+# config.yml
+minSlots: 10
+maxSlots: 100
+lowerMSPTThreshold: 25.0
+upperMSPTThreshold: 50.0

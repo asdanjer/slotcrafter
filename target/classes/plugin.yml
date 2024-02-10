@@ -1,0 +1,8 @@
+name: slotcrafter
+version: '1.0-SNAPSHOT'
+main: org.asdanjer.slotcrafter.Slotcrafter
+api-version: '1.20'
+commands:
+  setslots:
+    description: Sets the slot limit.
+    usage: /<command> <new limit>
