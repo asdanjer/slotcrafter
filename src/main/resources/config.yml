@@ -13,3 +13,7 @@ updateInterval: 60
 #time in seconds for the rolling average to be calculated over
 #the amount of measurements may vary as the Plugin only updates when a command is issues, a player joins or leaves and once in the interval configured in updateInterval
 averageMSPTInterval: 600
+#start in automatic mode
+autoMode: true
+# MSPT value at which players will be kicked when they opted in. Set to 0 or negative to disable.
+kickmspt: 70.0

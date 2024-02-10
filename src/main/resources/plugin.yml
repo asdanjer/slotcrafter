@@ -6,3 +6,12 @@ commands:
   setslots:
     description: Sets the slot limit.
     usage: /<command> <new limit/auto>
+  yeetme:
+    description: Toggle automatic kick when MSPT gets too high.
+    usage: /<command>
+  yeetthem:
+    description: Kick all players who have enabled automatic kick.
+    usage: /<command>
+  update:
+    description: Updates the configuration variables.
+    usage: /<command>

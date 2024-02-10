@@ -15,33 +15,46 @@ import java.util.logging.Logger;
 import java.util.LinkedList;
 
 public final class Slotcrafter extends JavaPlugin implements EventListener {
+    private Config pluginConfig;
     LinkedList<MsptValue> msptValues = new LinkedList<>();
-    boolean mode = true;
+    boolean mode = getConfig().getBoolean("autoMode");
     int manualCap = 1;
     Logger logger = Bukkit.getLogger();
+    private YeetCommand yeetCommand;
+
     @Override
     public void onEnable() {
-        int updateinterval = getConfig().getInt("updateInterval");
-        this.getCommand("setslots").setExecutor(new SlotLimitCommand(this));
-        // Load configuration
+        this.pluginConfig = new Config(this);
         this.saveDefaultConfig();
-        // Schedule repeating task to check MSPT and adjust player cap
+        int updateinterval = getConfig().getInt("updateInterval");
+
+        this.yeetCommand = new YeetCommand(this);
+        this.getCommand("yeetme").setExecutor(yeetCommand);
+        this.getCommand("yeetthem").setExecutor(yeetCommand);
+        this.getCommand("setslots").setExecutor(new SlotLimitCommand(this));
+
+        // Schedule repeating task to check MSPT and adjust player cap and yeet people
         Bukkit.getScheduler().runTaskTimer(this, new Runnable() {
             @Override
             public void run() {
                 adjustPlayerCap();
+                yeetCommand.checkyeetability();
             }
         }, 0L, 20L * updateinterval);
         setPlayerCap(getConfig().getInt("minSlots"));
     }
+
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         adjustPlayerCap();
     }
+
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
+        yeetCommand.removeyeeter(event.getPlayer().getUniqueId());
         adjustPlayerCap();
     }
+
     private void adjustPlayerCap() {
         double currentMSPT = getMspt();
         int currentPlayers = Bukkit.getOnlinePlayers().size();
@@ -54,7 +67,7 @@ public final class Slotcrafter extends JavaPlugin implements EventListener {
         int newPlayerCap;
         if (mode) logger.info("so true");
 
-        if(mode) {
+        if (mode) {
 
             logger.info("Current MSPT: " + currentMSPT);
             logger.info("Lower threshold: " + lowerThreshold);
@@ -72,8 +85,7 @@ public final class Slotcrafter extends JavaPlugin implements EventListener {
             logger.info("New player cap: " + newPlayerCap);
 
 
-        }
-        else{
+        } else {
             newPlayerCap = manualCap;
 
         }
@@ -81,7 +93,7 @@ public final class Slotcrafter extends JavaPlugin implements EventListener {
     }
 
     private void setPlayerCap(int newPlayerCap) {
-        newPlayerCap= Math.max(newPlayerCap, getConfig().getInt("minSlots"));
+        newPlayerCap = Math.max(newPlayerCap, getConfig().getInt("minSlots"));
         logger.info("Player cap adjusted to: " + newPlayerCap);
         try {
             Bukkit.setMaxPlayers(newPlayerCap);
@@ -95,11 +107,10 @@ public final class Slotcrafter extends JavaPlugin implements EventListener {
         Spark spark = SparkProvider.get();
         GenericStatistic<DoubleAverageInfo, StatisticWindow.MillisPerTick> mspt = spark.mspt();
 
-        if (mspt == null){
+        if (mspt == null) {
             logger.info("could not get mspt statistic, returning 1000 as a placeholder value. This is normal on startup.");
             return 1000;
-        }
-        else{
+        } else {
             // Get the MSPT value and add it to the list with the current timestamp
             double currentMspt = mspt.poll(StatisticWindow.MillisPerTick.MINUTES_1).mean();
             msptValues.add(new MsptValue(System.currentTimeMillis(), currentMspt));
@@ -118,12 +129,18 @@ public final class Slotcrafter extends JavaPlugin implements EventListener {
             return sum / msptValues.size();
         }
     }
+
     public void fullAuto(boolean mode) {
         this.mode = mode;
     }
+
     public void setManualCap(int manualCap) {
         this.manualCap = manualCap;
         mode = false;
         adjustPlayerCap();
+    }
+
+    public Config getPluginConfig() {
+        return pluginConfig;
     }
 }
