@@ -19,6 +19,7 @@ public final class Slotcrafter extends JavaPlugin implements EventListener {
     Logger logger = Bukkit.getLogger();
     @Override
     public void onEnable() {
+        int updateinterval = getConfig().getInt("updateInterval");
         this.getCommand("setslots").setExecutor(new SlotLimitCommand(this));
         // Load configuration
         this.saveDefaultConfig();
@@ -28,7 +29,7 @@ public final class Slotcrafter extends JavaPlugin implements EventListener {
             public void run() {
                 adjustPlayerCap();
             }
-        }, 0L, 20L * 5); // 60 seconds debug:1 second
+        }, 0L, 20L * updateinterval);
         setPlayerCap(getConfig().getInt("minSlots"));
     }
     @EventHandler
