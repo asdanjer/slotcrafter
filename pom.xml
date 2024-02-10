@@ -6,7 +6,7 @@
 
     <groupId>org.asdanjer</groupId>
     <artifactId>slotcrafter</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.1-ALPHA</version>
     <packaging>jar</packaging>
 
     <name>slotcrafter</name>
