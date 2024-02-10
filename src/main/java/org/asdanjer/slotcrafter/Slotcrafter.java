@@ -12,8 +12,10 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import java.util.EventListener;
 import java.util.logging.Logger;
+import java.util.LinkedList;
 
 public final class Slotcrafter extends JavaPlugin implements EventListener {
+    LinkedList<MsptValue> msptValues = new LinkedList<>();
     boolean mode = true;
     int manualCap = 1;
     Logger logger = Bukkit.getLogger();
@@ -41,7 +43,7 @@ public final class Slotcrafter extends JavaPlugin implements EventListener {
         adjustPlayerCap();
     }
     private void adjustPlayerCap() {
-        double currentMSPT = getMsptLastMin();
+        double currentMSPT = getMspt();
         int currentPlayers = Bukkit.getOnlinePlayers().size();
         int minSlots = getConfig().getInt("minSlots");
         System.out.printf(String.valueOf(minSlots));
@@ -89,16 +91,31 @@ public final class Slotcrafter extends JavaPlugin implements EventListener {
         }
     }
 
-    public double getMsptLastMin() {
+    public double getMspt() {
         Spark spark = SparkProvider.get();
         GenericStatistic<DoubleAverageInfo, StatisticWindow.MillisPerTick> mspt = spark.mspt();
 
         if (mspt == null){
-            logger.severe("Failed to get MSPT");
+            logger.info("could not get mspt statistic, returning 1000 as a placeholder value. This is normal on startup.");
             return 1000;
         }
         else{
-            return mspt.poll(StatisticWindow.MillisPerTick.MINUTES_1).mean();
+            // Get the MSPT value and add it to the list with the current timestamp
+            double currentMspt = mspt.poll(StatisticWindow.MillisPerTick.MINUTES_1).mean();
+            msptValues.add(new MsptValue(System.currentTimeMillis(), currentMspt));
+
+            // Remove MSPT values that are older than the desired timeframe
+            long timeframeMillis = getConfig().getInt("averageMSPTInterval") * 1000;
+            while (!msptValues.isEmpty() && msptValues.getFirst().timestamp < System.currentTimeMillis() - timeframeMillis) {
+                msptValues.removeFirst();
+            }
+
+            // Calculate the average MSPT over the remaining values
+            double sum = 0;
+            for (MsptValue value : msptValues) {
+                sum += value.mspt;
+            }
+            return sum / msptValues.size();
         }
     }
     public void fullAuto(boolean mode) {
