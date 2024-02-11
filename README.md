@@ -20,7 +20,6 @@ SlotCrafter introduces several commands to manage slot limits, update configurat
 
 - **Description:** Updates a specific SlotCrafter configuration setting to a new value.
 - **Permission:** `slotcrafter.admin`
-- **Permission Message:** "You do not have permission to use this command."
 - **Tab-Completion:** Yes
 
 ### `/yeetme`
