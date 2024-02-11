@@ -141,7 +141,7 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
         msptValues.add(new MsptValue(System.currentTimeMillis(), currentMspt));
 
         // Remove MSPT values that are older than the desired timeframe
-        long timeframeMillis = getConfig().getInt("averageMSPTInterval") * 1000;
+        long timeframeMillis = (long)getConfig().getInt("averageMSPTInterval") * 1000;
         while (!msptValues.isEmpty() && msptValues.getFirst().timestamp < System.currentTimeMillis() - timeframeMillis) {
             msptValues.removeFirst();
         }
@@ -151,7 +151,7 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
         for (MsptValue value : msptValues) {
             sum += value.mspt;
         }
-        logger.info("MSPT: " + currentMspt + "Calulated from: " + msptValues.size() + " values");
+        logger.info("MSPT: " + currentMspt + "Calculated from: " + msptValues.size() + " values");
         return sum / msptValues.size();
 
     }
