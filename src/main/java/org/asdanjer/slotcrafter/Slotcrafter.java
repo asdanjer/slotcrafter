@@ -71,19 +71,17 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
     }
 
     private void adjustPlayerCap() {
-        double currentMSPT = getMspt();
-        int currentPlayers = Bukkit.getOnlinePlayers().size();
-        int minSlots = getConfig().getInt("minSlots");
-        System.out.printf(String.valueOf(minSlots));
-        int maxSlots = getConfig().getInt("maxSlots");
-        double lowerThreshold = getConfig().getDouble("lowerMSPTThreshold");
-        double upperThreshold = getConfig().getDouble("upperMSPTThreshold");
+
 
         int newPlayerCap;
-        if (mode) logger.info("so true");
-
         if (mode) {
-
+            double currentMSPT = getMspt();
+            int currentPlayers = Bukkit.getOnlinePlayers().size();
+            int minSlots = getConfig().getInt("minSlots");
+            System.out.printf(String.valueOf(minSlots));
+            int maxSlots = getConfig().getInt("maxSlots");
+            double lowerThreshold = getConfig().getDouble("lowerMSPTThreshold");
+            double upperThreshold = getConfig().getDouble("upperMSPTThreshold");
             if (currentMSPT < lowerThreshold) {
                 newPlayerCap = Math.min(currentPlayers + 1, maxSlots);
             } else if (currentMSPT > upperThreshold) {
@@ -121,7 +119,7 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
         } else {
             // Get the MSPT value and add it to the list with the current timestamp
             double currentMspt = mspt.poll(StatisticWindow.MillisPerTick.MINUTES_1).mean();
-            if(getConfig().getInt("averageMSPTInterval")==0){
+            if(getConfig().getInt("averageMSPTInterval")<=0){
                 logger.info("MSPT: " + currentMspt);
                 return currentMspt;
             }

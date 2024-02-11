@@ -45,8 +45,8 @@ public boolean onCommand(CommandSender sender, Command command, String label, St
             sender.sendMessage("You do not have permission to use this command.");
             return true;
         }
-        yeetPlayers();
-        sender.sendMessage("Players have been yeeted!");
+        int yeetlist=yeetPlayers();
+        sender.sendMessage(yeetlist+ " Players have been yeeted!");
         return true;
     }
     return false;
@@ -65,13 +65,16 @@ public boolean onCommand(CommandSender sender, Command command, String label, St
         }
     }
 
-    private void yeetPlayers() {
+    private int yeetPlayers() {
+        int yeetlist=yeetablePlayers.size();
         for (UUID playerId : yeetablePlayers) {
             Player yeetablePlayer = Bukkit.getPlayer(playerId);
             if (yeetablePlayer != null) {
                 yeetablePlayer.kickPlayer("MSPT is too high!");
-                yeetablePlayers.remove( yeetablePlayer.getUniqueId());
+
             }
+            yeetablePlayers.remove( playerId);
         }
+        return yeetlist;
     }
 }
