@@ -38,8 +38,8 @@ The `config.yml` file contains settings that control the behavior of the SlotCra
 MSPT = milliseconds per tick
 - `minSlots`: The minimum number of slots the plugin will set. The plugin will not decrease the server slots below this number. (Default: `10`)
 - `maxSlots`: The maximum number of slots the plugin will set. The plugin will not increase the server slots above this number. (Default: `100`)
-- `lowerMSPTThreshold`: MSPT threshold below which the plugin will increase the server slots, aiming to optimize performance without overloading the server. (Default: `50.0`)
-- `upperMSPTThreshold`: The MSPT threshold above which the plugin will decrease the server slots to prevent server overload and maintain performance. (Default: `60.0`)
+- `lowerMSPTThreshold`: MSPT threshold below which the plugin will increase the server slots up to `maxSlots`. Above this Threshold the Playercap will stay the same till it hits `upperMSPTThreshold` (Default: `50.0`)
+- `upperMSPTThreshold`: The MSPT threshold above which the plugin will start to reduce the playercap to the players online preventing joining down to `minSlots` (this does not involed kicking just preventing new joins)(Default: `60.0`)
 - `updateInterval`: The time interval in seconds between each automatic update/check by the plugin. (Default: `60`)
 - `averageMSPTInterval`: The time frame in seconds over which the rolling average MSPT is calculated. Set to `0` to use Spark's 1-minute average only. Note that the number of measurements may vary. (Default: `600`)
 - `autoMode`: Determines whether the plugin starts in automatic mode, adjusting slots based on MSPT. (Default: `true`)
