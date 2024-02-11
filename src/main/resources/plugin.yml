@@ -12,6 +12,22 @@ commands:
   yeetthem:
     description: Kick all players who have enabled automatic kick.
     usage: /<command>
-  update:
-    description: Updates the configuration variables.
-    usage: /<command>
+  slotcrafter:
+    description: Updates the config setting.
+    usage: /<command> update <config setting> <value>
+    permission: slotcrafter.admin
+    permission-message: You do not have permission to use this command.
+    tab-completion: true
+permissions:
+  slotcrafter.admin:
+    description: Allows access to all Slotcrafter commands.
+    default: op
+  slotcrafter.yeetcommand:
+    description: Allows access to the YeetCommand.
+    default: op
+  slotcrafter.slotlimitcommand:
+    description: Allows access to the SlotLimitCommand.
+    default: op
+  slotcrafter.slotcraftercommand:
+    description: Allows access to the SlotcrafterCommand.
+    default: op

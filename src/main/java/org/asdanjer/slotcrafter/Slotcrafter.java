@@ -7,43 +7,43 @@ import me.lucko.spark.api.statistic.misc.DoubleAverageInfo;
 import me.lucko.spark.api.statistic.types.GenericStatistic;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import java.util.EventListener;
+import org.bukkit.scheduler.BukkitTask;
+
 import java.util.logging.Logger;
 import java.util.LinkedList;
 
-public final class Slotcrafter extends JavaPlugin implements EventListener {
-    private Config pluginConfig;
+public final class Slotcrafter extends JavaPlugin implements Listener {
+
     LinkedList<MsptValue> msptValues = new LinkedList<>();
     boolean mode = getConfig().getBoolean("autoMode");
     int manualCap = 1;
     Logger logger = Bukkit.getLogger();
     private YeetCommand yeetCommand;
+    private BukkitTask task;
 
     @Override
     public void onEnable() {
-        this.pluginConfig = new Config(this);
         this.saveDefaultConfig();
-        int updateinterval = getConfig().getInt("updateInterval");
-
+        Bukkit.getServer().getPluginManager().registerEvents(this, this);
         this.yeetCommand = new YeetCommand(this);
-        this.getCommand("yeetme").setExecutor(yeetCommand);
-        this.getCommand("yeetthem").setExecutor(yeetCommand);
-        this.getCommand("setslots").setExecutor(new SlotLimitCommand(this));
+        SlotcrafterCommand slotcrafterCommand = new SlotcrafterCommand(this);
+        getCommand("slotcrafter").setExecutor(slotcrafterCommand);
+        getCommand("slotcrafter").setTabCompleter(slotcrafterCommand);
+        getCommand("yeetme").setExecutor(yeetCommand);
+        getCommand("yeetthem").setExecutor(yeetCommand);
+        SlotLimitCommand slotLimitCommand = new SlotLimitCommand(this);
+        getCommand("setslots").setExecutor(slotLimitCommand);
+        getCommand("setslots").setTabCompleter(slotLimitCommand);
+
 
         // Schedule repeating task to check MSPT and adjust player cap and yeet people
-        Bukkit.getScheduler().runTaskTimer(this, new Runnable() {
-            @Override
-            public void run() {
-                adjustPlayerCap();
-                yeetCommand.checkyeetability();
-            }
-        }, 0L, 20L * updateinterval);
+        manageTaskRunner();
         setPlayerCap(getConfig().getInt("minSlots"));
     }
-
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         adjustPlayerCap();
@@ -53,6 +53,21 @@ public final class Slotcrafter extends JavaPlugin implements EventListener {
     public void onPlayerQuit(PlayerQuitEvent event) {
         yeetCommand.removeyeeter(event.getPlayer().getUniqueId());
         adjustPlayerCap();
+    }
+    public void manageTaskRunner() {
+        int updateInterval = getConfig().getInt("updateInterval");
+
+        if (task != null) {
+            task.cancel();
+        }
+
+        task = Bukkit.getScheduler().runTaskTimer(this, new Runnable() {
+            @Override
+            public void run() {
+                adjustPlayerCap();
+                yeetCommand.checkyeetability();
+            }
+        }, 0L, 20L * updateInterval);
     }
 
     private void adjustPlayerCap() {
@@ -69,20 +84,13 @@ public final class Slotcrafter extends JavaPlugin implements EventListener {
 
         if (mode) {
 
-            logger.info("Current MSPT: " + currentMSPT);
-            logger.info("Lower threshold: " + lowerThreshold);
             if (currentMSPT < lowerThreshold) {
                 newPlayerCap = Math.min(currentPlayers + 1, maxSlots);
-                logger.info("ajusting low: " + newPlayerCap);
             } else if (currentMSPT > upperThreshold) {
                 newPlayerCap = Math.max(currentPlayers - 1, minSlots);
-                logger.info("ajusting high: " + newPlayerCap);
             } else {
                 newPlayerCap = Bukkit.getMaxPlayers();
-                logger.info("No threshold reached");
             }
-            logger.info("Current player cap: " + Bukkit.getMaxPlayers());
-            logger.info("New player cap: " + newPlayerCap);
 
 
         } else {
@@ -113,34 +121,66 @@ public final class Slotcrafter extends JavaPlugin implements EventListener {
         } else {
             // Get the MSPT value and add it to the list with the current timestamp
             double currentMspt = mspt.poll(StatisticWindow.MillisPerTick.MINUTES_1).mean();
-            msptValues.add(new MsptValue(System.currentTimeMillis(), currentMspt));
-
-            // Remove MSPT values that are older than the desired timeframe
-            long timeframeMillis = getConfig().getInt("averageMSPTInterval") * 1000;
-            while (!msptValues.isEmpty() && msptValues.getFirst().timestamp < System.currentTimeMillis() - timeframeMillis) {
-                msptValues.removeFirst();
+            if(getConfig().getInt("averageMSPTInterval")==0){
+                logger.info("MSPT: " + currentMspt);
+                return currentMspt;
+            }
+            else {
+                return calculateMspt(currentMspt);
             }
 
-            // Calculate the average MSPT over the remaining values
-            double sum = 0;
-            for (MsptValue value : msptValues) {
-                sum += value.mspt;
-            }
-            return sum / msptValues.size();
         }
     }
+    private double calculateMspt(double currentMspt) {
+        msptValues.add(new MsptValue(System.currentTimeMillis(), currentMspt));
 
+        // Remove MSPT values that are older than the desired timeframe
+        long timeframeMillis = getConfig().getInt("averageMSPTInterval") * 1000;
+        while (!msptValues.isEmpty() && msptValues.getFirst().timestamp < System.currentTimeMillis() - timeframeMillis) {
+            msptValues.removeFirst();
+        }
+
+        // Calculate the average MSPT over the remaining values
+        double sum = 0;
+        for (MsptValue value : msptValues) {
+            sum += value.mspt;
+        }
+        logger.info("MSPT: " + currentMspt + "Calulated from: " + msptValues.size() + " values");
+        return sum / msptValues.size();
+
+    }
     public void fullAuto(boolean mode) {
         this.mode = mode;
+        adjustPlayerCap();
     }
-
     public void setManualCap(int manualCap) {
         this.manualCap = manualCap;
         mode = false;
         adjustPlayerCap();
     }
+    public void updateConfigValue(String setting, String value) {
 
-    public Config getPluginConfig() {
-        return pluginConfig;
+        switch (setting) {
+            case "upperMSPTThreshold":
+            case "lowerMSPTThreshold":
+            case "kickmspt":
+                getConfig().set(setting, Double.parseDouble(value));
+                break;
+            case "minSlots":
+            case "maxSlots":
+            case "updateInterval":
+            case "averageMSPTInterval":
+                getConfig().set(setting, Integer.parseInt(value));
+                break;
+            case "autoMode":
+                getConfig().set(setting, Boolean.parseBoolean(value));
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid config setting.");
+        }
+
+        this.saveConfig();
+        this.reloadConfig();
+        manageTaskRunner();
     }
 }

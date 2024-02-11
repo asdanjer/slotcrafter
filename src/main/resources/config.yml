@@ -11,6 +11,7 @@ upperMSPTThreshold: 60.0
 #the time in seconds between each update
 updateInterval: 60
 #time in seconds for the rolling average to be calculated over
+#set to 0 for sparc 1 minute average only
 #the amount of measurements may vary as the Plugin only updates when a command is issues, a player joins or leaves and once in the interval configured in updateInterval
 averageMSPTInterval: 600
 #start in automatic mode
