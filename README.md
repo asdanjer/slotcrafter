@@ -42,6 +42,6 @@ The `config.yml` file contains settings that control the behavior of the SlotCra
 - `lowerMSPTThreshold`: The Mean Server Tick Time (MSPT) threshold below which the plugin will increase the server slots, aiming to optimize performance without overloading the server. (Default: `50.0`)
 - `upperMSPTThreshold`: The MSPT threshold above which the plugin will decrease the server slots to prevent server overload and maintain performance. (Default: `60.0`)
 - `updateInterval`: The time interval in seconds between each automatic update/check by the plugin. (Default: `60`)
-- `averageMSPTInterval`: The time frame in seconds over which the rolling average MSPT is calculated. Set to `0` to use Spark's 1-minute average only. Note that the number of measurements may vary as the plugin updates based on command issuance, player joinin gor leaveing and at the configured update interval. (Default: `600`)
+- `averageMSPTInterval`: The time frame in seconds over which the rolling average MSPT is calculated. Set to `0` to use Spark's 1-minute average only. Note that the number of measurements may vary. (Default: `600`)
 - `autoMode`: Determines whether the plugin starts in automatic mode, adjusting slots based on performance metrics. (Default: `true`)
 - `kickmspt`: The MSPT value at which players who have opted in will be kicked. Set to `0` or a negative number to disable this feature. (Default: `70.0`)
