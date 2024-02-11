@@ -60,6 +60,10 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
         if (task != null) {
             task.cancel();
         }
+        if (updateInterval <= 0) {
+            logger.warning("Config value for updateInterval is not a positive integer. Using default value: 60");
+            updateInterval = 60;
+        }
 
         task = Bukkit.getScheduler().runTaskTimer(this, new Runnable() {
             @Override
@@ -95,6 +99,10 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
             newPlayerCap = manualCap;
 
         }
+        if(newPlayerCap<=0){
+            newPlayerCap=1;
+        }
+        logger.info("Current player cap: " + Bukkit.getMaxPlayers() + " New player cap: " + newPlayerCap);
         setPlayerCap(newPlayerCap);
     }
 
