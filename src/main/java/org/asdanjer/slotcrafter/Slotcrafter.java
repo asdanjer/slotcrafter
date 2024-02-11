@@ -87,7 +87,7 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
             if (currentMSPT < lowerThreshold) {
                 newPlayerCap = Math.min(currentPlayers + 1, maxSlots);
             } else if (currentMSPT > upperThreshold) {
-                newPlayerCap = Math.max(currentPlayers - 1, minSlots);
+                newPlayerCap = Math.max(currentPlayers, minSlots);
             } else {
                 newPlayerCap = Bukkit.getMaxPlayers();
             }
