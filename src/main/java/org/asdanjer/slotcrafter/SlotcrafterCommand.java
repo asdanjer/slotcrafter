@@ -30,7 +30,7 @@ public class SlotcrafterCommand implements CommandExecutor, TabCompleter {
                 plugin.updateConfigValue(setting, value);
                 sender.sendMessage("Config setting updated successfully.");
             } catch (IllegalArgumentException e) {
-                sender.sendMessage(e.getMessage());
+                sender.sendMessage("Invalid setting or value. Please check and try again.");
             }
         } else {
             sender.sendMessage("You do not have permission to use this command.");

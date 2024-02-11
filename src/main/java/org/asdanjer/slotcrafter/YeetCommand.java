@@ -6,7 +6,9 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.UUID;
 
 public class YeetCommand implements CommandExecutor {
@@ -66,15 +68,16 @@ public boolean onCommand(CommandSender sender, Command command, String label, St
     }
 
     private int yeetPlayers() {
-        int yeetlist=yeetablePlayers.size();
-        for (UUID playerId : yeetablePlayers) {
+        List<UUID> playersToYeet = new ArrayList<>(yeetablePlayers);
+        int yeetlist=playersToYeet.size();
+        for (UUID playerId : playersToYeet) {
             Player yeetablePlayer = Bukkit.getPlayer(playerId);
             if (yeetablePlayer != null) {
                 yeetablePlayer.kickPlayer("MSPT is too high!");
 
             }
-            yeetablePlayers.remove( playerId);
         }
+        yeetablePlayers.clear();
         return yeetlist;
     }
 }

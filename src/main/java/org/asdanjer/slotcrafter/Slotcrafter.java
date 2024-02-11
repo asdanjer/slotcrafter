@@ -99,11 +99,13 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
             newPlayerCap = manualCap;
 
         }
-        if(newPlayerCap<=0){
-            newPlayerCap=1;
+        if (newPlayerCap <= 0) {
+            newPlayerCap = 1;
         }
         logger.info("Current player cap: " + Bukkit.getMaxPlayers() + " New player cap: " + newPlayerCap);
-        setPlayerCap(newPlayerCap);
+        if (newPlayerCap != Bukkit.getMaxPlayers()) {
+            setPlayerCap(newPlayerCap);
+        }
     }
 
     private void setPlayerCap(int newPlayerCap) {
