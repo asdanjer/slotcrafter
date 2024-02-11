@@ -1,33 +1,39 @@
 name: slotcrafter
 version: '${project.version}'
 main: org.asdanjer.slotcrafter.Slotcrafter
+depend:
+  - spark
 api-version: '1.20'
 commands:
   setslots:
     description: Sets the slot limit.
     usage: /<command> <new limit/auto>
-  yeetme:
-    description: Toggle automatic kick when MSPT gets too high.
-    usage: /<command>
-  yeetthem:
-    description: Kick all players who have enabled automatic kick.
-    usage: /<command>
+    permission: slotcrafter.setslotlimit
+    tab-completion: true
   slotcrafter:
     description: Updates the config setting.
     usage: /<command> update <config setting> <value>
     permission: slotcrafter.admin
     permission-message: You do not have permission to use this command.
     tab-completion: true
+  yeetme:
+    description: Toggle automatic kick when MSPT gets too high.
+    usage: /<command>
+    permission: slotcrafter.yeetme
+  yeetthem:
+    description: Kick all players who have enabled automatic kick.
+    usage: /<command>
+    permission: slotcrafter.yeetthem
 permissions:
-  slotcrafter.admin:
-    description: Allows access to all Slotcrafter commands.
-    default: op
-  slotcrafter.yeetcommand:
-    description: Allows access to the YeetCommand.
-    default: op
-  slotcrafter.slotlimitcommand:
+  slotcrafter.setslotlimit:
     description: Allows access to the SlotLimitCommand.
     default: op
-  slotcrafter.slotcraftercommand:
-    description: Allows access to the SlotcrafterCommand.
+  slotcrafter.admin:
+    description: Allows access to changing config values
+    default: op
+  slotcrafter.yeetme:
+    description: Allows people to opt into yeeting.
+    default: true
+  slotcrafter.yeetthem:
+    description: Allows people to kick opt in players.
     default: op
