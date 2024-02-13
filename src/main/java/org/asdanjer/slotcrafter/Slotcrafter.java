@@ -24,7 +24,7 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
     Logger logger = Bukkit.getLogger();
     private YeetCommand yeetCommand;
     private BukkitTask task;
-
+    Info info = new Info(this);
     @Override
     public void onEnable() {
         this.saveDefaultConfig();
@@ -70,6 +70,7 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
             public void run() {
                 adjustPlayerCap();
                 yeetCommand.checkyeetability();
+                info.setYeetablePlayers(yeetCommand.getYeetablePlayers());
             }
         }, 0L, 20L * updateInterval);
     }
@@ -78,6 +79,8 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
 
 
         int newPlayerCap;
+        info.setMode(mode);
+        info.setManualCap(manualCap);
         if (mode) {
             double currentMSPT = getMspt();
             int currentPlayers = Bukkit.getOnlinePlayers().size();
@@ -102,7 +105,6 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
         if (newPlayerCap <= 0) {
             newPlayerCap = 1;
         }
-        logger.info("Current player cap: " + Bukkit.getMaxPlayers() + " New player cap: " + newPlayerCap);
         if (newPlayerCap != Bukkit.getMaxPlayers()) {
             setPlayerCap(newPlayerCap);
         }
@@ -110,7 +112,6 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
 
     private void setPlayerCap(int newPlayerCap) {
         newPlayerCap = Math.max(newPlayerCap, getConfig().getInt("minSlots"));
-        logger.info("Player cap adjusted to: " + newPlayerCap);
         try {
             Bukkit.setMaxPlayers(newPlayerCap);
         } catch (Exception e) {
@@ -130,31 +131,34 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
             // Get the MSPT value and add it to the list with the current timestamp
             double currentMspt = mspt.poll(StatisticWindow.MillisPerTick.MINUTES_1).mean();
             if(getConfig().getInt("averageMSPTInterval")<=0){
+                info.setAverageMode(false);
                 logger.info("MSPT: " + currentMspt);
                 return currentMspt;
             }
-            else {
-                return calculateMspt(currentMspt);
-            }
+            info.setAverageMode(true);
+        return calculateMspt(currentMspt);
+
 
         }
     }
     private double calculateMspt(double currentMspt) {
-        msptValues.add(new MsptValue(System.currentTimeMillis(), currentMspt));
 
         // Remove MSPT values that are older than the desired timeframe
         long timeframeMillis = (long)getConfig().getInt("averageMSPTInterval") * 1000;
         while (!msptValues.isEmpty() && msptValues.getFirst().timestamp < System.currentTimeMillis() - timeframeMillis) {
             msptValues.removeFirst();
         }
+        msptValues.add(new MsptValue(System.currentTimeMillis(), currentMspt));
 
         // Calculate the average MSPT over the remaining values
         double sum = 0;
         for (MsptValue value : msptValues) {
             sum += value.mspt;
         }
-        logger.info("MSPT: " + currentMspt + "Calculated from: " + msptValues.size() + " values");
-        return sum / msptValues.size();
+        double avaragemspt= sum / msptValues.size();
+        info.setAverageMspt((int) avaragemspt);
+        info.setMsptcount(msptValues.size());
+        return avaragemspt;
 
     }
     public void fullAuto(boolean mode) {
@@ -167,18 +171,17 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
         adjustPlayerCap();
     }
     public void updateConfigValue(String setting, String value) {
-
+        logger.info("Updating config setting: " + setting + " to " + value);
         switch (setting) {
             case "upperMSPTThreshold":
             case "lowerMSPTThreshold":
             case "kickmspt":
-                getConfig().set(setting, Double.parseDouble(value));
-                break;
             case "minSlots":
             case "maxSlots":
             case "updateInterval":
             case "averageMSPTInterval":
                 getConfig().set(setting, Integer.parseInt(value));
+                logger.info("Setting int  " + setting + " to " + value);
                 break;
             case "autoMode":
                 getConfig().set(setting, Boolean.parseBoolean(value));
@@ -188,7 +191,10 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
         }
 
         this.saveConfig();
-        this.reloadConfig();
         manageTaskRunner();
+    }
+    public String getInfo() {
+
+        return info.getfulldebugstring();
     }
 }

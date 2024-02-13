@@ -80,4 +80,7 @@ public boolean onCommand(CommandSender sender, Command command, String label, St
         yeetablePlayers.clear();
         return yeetlist;
     }
+    public HashSet<UUID> getYeetablePlayers() {
+        return yeetablePlayers;
+    }
 }

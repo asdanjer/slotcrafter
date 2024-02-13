@@ -12,7 +12,7 @@ commands:
     tab-completion: true
   slotcrafter:
     description: Updates the config setting.
-    usage: /<command> update <config setting> <value>
+    usage: /<command> update <config setting> <value> or /slotcrafter info
     permission: slotcrafter.admin
     permission-message: You do not have permission to use this command.
     tab-completion: true
@@ -29,7 +29,7 @@ permissions:
     description: Allows access to the SlotLimitCommand.
     default: op
   slotcrafter.admin:
-    description: Allows access to changing config values
+    description: Allows access to changing config values and get info
     default: op
   slotcrafter.yeetme:
     description: Allows people to opt into yeeting.
