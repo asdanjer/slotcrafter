@@ -24,7 +24,22 @@ public class Info {
     }
     //getts all vlalues from this class as a nicly formatted string ready to be sent to the user
     public String getfulldebugstring(){
-        String output = "";
+        String output = "Settings:\n";
+        output += "Min Slots: " + plugin.getConfig().getInt("minSlots") + "\n";
+        output += "Max Slots: " + plugin.getConfig().getInt("maxSlots") + "\n";
+        output += "Lower MSPT Threshold: " + plugin.getConfig().getInt("lowerMSPTThreshold") + "\n";
+        output += "Upper MSPT Threshold: " + plugin.getConfig().getInt("upperMSPTThreshold") + "\n";
+        output += "udate Interval: " + plugin.getConfig().getInt("updateInterval") + "\n";
+        //averageMSPTInterval
+        output += "Average MSPT Interval: " + plugin.getConfig().getInt("averageMSPTInterval") + "\n";
+        //autoMode
+        output += "Auto Mode: " + plugin.getConfig().getBoolean("autoMode") + "\n";
+        //kickmspt
+        output += "Kick MSPT: " + plugin.getConfig().getInt("kickmspt") + "\n";
+        output += "Auto Mode: " + mode + "\n";
+        output += "Update Interval: " + plugin.getConfig().getInt("updateInterval") + "\n";
+        output += "Debug Info:\n";
+
         if(mode){
             if(averageMode){
                 output += "Average MSPT: " + averageMspt + '\n';
@@ -52,6 +67,7 @@ public class Info {
                 output += "No Yeetable Players\n";
             }
         }
+
 
         return output;
 

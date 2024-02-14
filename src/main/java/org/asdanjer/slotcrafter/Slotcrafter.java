@@ -46,13 +46,13 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
     }
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        adjustPlayerCap();
+        adjustPlayerCap(false);
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         yeetCommand.removeyeeter(event.getPlayer().getUniqueId());
-        adjustPlayerCap();
+        adjustPlayerCap(true);
     }
     public void manageTaskRunner() {
         int updateInterval = getConfig().getInt("updateInterval");
@@ -68,22 +68,23 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
         task = Bukkit.getScheduler().runTaskTimer(this, new Runnable() {
             @Override
             public void run() {
-                adjustPlayerCap();
+                adjustPlayerCap(false);
                 yeetCommand.checkyeetability();
                 info.setYeetablePlayers(yeetCommand.getYeetablePlayers());
             }
         }, 0L, 20L * updateInterval);
     }
 
-    private void adjustPlayerCap() {
-
-
+    private void adjustPlayerCap(boolean isQuitEvent) {
         int newPlayerCap;
         info.setMode(mode);
         info.setManualCap(manualCap);
         if (mode) {
             double currentMSPT = getMspt();
             int currentPlayers = Bukkit.getOnlinePlayers().size();
+            if(isQuitEvent){
+                currentPlayers--;
+            }
             int minSlots = getConfig().getInt("minSlots");
             System.out.printf(String.valueOf(minSlots));
             int maxSlots = getConfig().getInt("maxSlots");
@@ -132,7 +133,7 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
             double currentMspt = mspt.poll(StatisticWindow.MillisPerTick.MINUTES_1).mean();
             if(getConfig().getInt("averageMSPTInterval")<=0){
                 info.setAverageMode(false);
-                logger.info("MSPT: " + currentMspt);
+                info.setCurentMspt((int) currentMspt);
                 return currentMspt;
             }
             info.setAverageMode(true);
@@ -163,12 +164,12 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
     }
     public void fullAuto(boolean mode) {
         this.mode = mode;
-        adjustPlayerCap();
+        adjustPlayerCap(false);
     }
     public void setManualCap(int manualCap) {
         this.manualCap = manualCap;
         mode = false;
-        adjustPlayerCap();
+        adjustPlayerCap(false);
     }
     public void updateConfigValue(String setting, String value) {
         logger.info("Updating config setting: " + setting + " to " + value);
