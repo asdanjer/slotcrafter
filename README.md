@@ -22,6 +22,12 @@ SlotCrafter introduces several commands to manage slot limits, update configurat
 - **Permission:** `slotcrafter.admin`
 - **Tab-Completion:** Yes
 
+### `/slotcrafter info `
+
+- **Description:** Gives you some info from the Plugin.
+- **Permission:** `slotcrafter.admin`
+- **Tab-Completion:** Yes
+
 ### `/yeetme`
 
 - **Description:** Toggles the automatic kick feature for the user if the server's Mean Tick Time (MSPT) gets too high.
