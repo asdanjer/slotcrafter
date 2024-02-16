@@ -9,12 +9,17 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.util.HashMap;
+import java.util.UUID;
 import java.util.logging.Logger;
 import java.util.LinkedList;
+import org.bukkit.entity.Player;
+
 
 public final class Slotcrafter extends JavaPlugin implements Listener {
 
@@ -25,6 +30,7 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
     private YeetCommand yeetCommand;
     private BukkitTask task;
     Info info = new Info(this);
+    HashMap<UUID, Long> recentLeavers = new HashMap<>();
     @Override
     public void onEnable() {
         this.saveDefaultConfig();
@@ -45,12 +51,41 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
         setPlayerCap(getConfig().getInt("minSlots"));
     }
     @EventHandler
+    public void onPlayerLogin(PlayerLoginEvent event) {
+        Player player = event.getPlayer();
+        UUID playerUUID = player.getUniqueId();
+        if (event.getResult() == PlayerLoginEvent.Result.KICK_FULL) {
+            if (player.hasPermission("slotcrafter.ignorecap") || isPlayerOnList(playerUUID)) {
+                event.allow();
+            }
+        }
+    }
+    private boolean isPlayerOnList(UUID playerUUID) {
+        Long leaveTime = recentLeavers.get(playerUUID);
+        if (leaveTime != null) {
+            long currentTime = System.currentTimeMillis();
+            int delayInSeconds = getConfig().getInt("rejoinDelay");
+            if (currentTime - leaveTime <= delayInSeconds * 1000L) {
+                recentLeavers.remove(playerUUID);
+                return true;
+            }
+        }
+        return false;
+    }
+    private void clearRecentLeavers() {
+        long currentTime = System.currentTimeMillis();
+        recentLeavers.entrySet().removeIf(entry -> currentTime - entry.getValue() > getConfig().getInt("rejoinDelay") * 1000L);
+    }
+
+    @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         adjustPlayerCap(false);
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
+        UUID playerUUID = event.getPlayer().getUniqueId();
+        recentLeavers.put(playerUUID, System.currentTimeMillis());
         yeetCommand.removeyeeter(event.getPlayer().getUniqueId());
         adjustPlayerCap(true);
     }
@@ -71,6 +106,7 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
                 adjustPlayerCap(false);
                 yeetCommand.checkyeetability();
                 info.setYeetablePlayers(yeetCommand.getYeetablePlayers());
+                clearRecentLeavers();
             }
         }, 0L, 20L * updateInterval);
     }

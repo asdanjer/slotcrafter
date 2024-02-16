@@ -37,3 +37,6 @@ permissions:
   slotcrafter.yeetthem:
     description: Allows people to kick opt in players.
     default: op
+  slotcrafter.ignorecap:
+    description: Allows people to ignore the slot cap.
+    default: op
