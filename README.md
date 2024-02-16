@@ -50,7 +50,7 @@ MSPT = milliseconds per tick
 - `averageMSPTInterval`: The time frame in seconds over which the rolling average MSPT is calculated. Set to `0` to use Spark's 1-minute average only. Note that the number of measurements may vary. (Default: `600`)
 - `autoMode`: Determines whether the plugin starts in automatic mode, adjusting slots based on MSPT. (Default: `true`)
 - `kickmspt`: The MSPT value at which players who have opted in will be kicked. Set to `0` or a negative number to disable this feature. (Default: `70`)
-- `rejoinDelay`: The time people can still rejoin ignoring Player cap after discoenting/losing conection. (Default: `120`)
+- `rejoinDelay`: The time people can still rejoin, ignoring player cap after disconnecting/losing connection. (Default: `120`)
 
 ### `slotcrafter.ignorecap`
 
