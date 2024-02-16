@@ -54,7 +54,4 @@ MSPT = milliseconds per tick
 
 ### `slotcrafter.ignorecap`
 
-- **Description:** Permission ignores the Slot Cap.
-  slotcrafter.ignorecap:
-    description: Allows people to ignore the slot cap.
-    default: op
+- **Description:** Allows people to ignore the slot cap.
