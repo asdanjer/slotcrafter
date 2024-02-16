@@ -18,7 +18,7 @@ commands:
     tab-completion: true
   yeetme:
     description: Toggle automatic kick when MSPT gets too high.
-    usage: /<command>
+    usage: /<command> or /<command> <mspt>
     permission: slotcrafter.yeetme
   yeetthem:
     description: Kick all players who have enabled automatic kick.
