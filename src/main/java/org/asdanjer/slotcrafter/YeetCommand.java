@@ -13,7 +13,7 @@ import java.util.UUID;
 public class YeetCommand implements CommandExecutor {
     private Slotcrafter plugin;
     private HashSet<UUID> yeetablePlayers;
-    private HashMap<UUID, Double> customMsptThresholds;
+    private HashMap<UUID, Integer> customMsptThresholds;
 
     public YeetCommand(Slotcrafter plugin) {
         this.plugin = plugin;
@@ -33,7 +33,7 @@ public class YeetCommand implements CommandExecutor {
                 return true;
             }
             Player player = (Player) sender;
-            if (yeetablePlayers.contains(player.getUniqueId())) {
+            if (yeetablePlayers.contains(player.getUniqueId())&&args.length==0) {
                 yeetablePlayers.remove(player.getUniqueId());
                 customMsptThresholds.remove(player.getUniqueId());
                 player.sendMessage("You will not be automatically kicked anymore.");
@@ -41,12 +41,12 @@ public class YeetCommand implements CommandExecutor {
                 yeetablePlayers.add(player.getUniqueId());
                 if (args.length > 0) {
                     try {
-                        double customMspt = (double) Integer.parseInt(args[0]);
+                        int customMspt = Integer.parseInt(args[0]);
                         if(customMspt>200 || customMspt<1){
                             player.sendMessage("Invalid MSPT value. Using default.");
                         }else{
                             customMsptThresholds.put(player.getUniqueId(), customMspt);
-                            player.sendMessage("You will be automatically kicked when MSPT gets to " + customMspt + ".");
+                            player.sendMessage("You will be automatically kicked when MSPT gets to " + customMspt);
                         }
                     } catch (NumberFormatException e) {
                         player.sendMessage("Invalid MSPT value. Using default.");
@@ -79,7 +79,7 @@ public class YeetCommand implements CommandExecutor {
         double mspt = plugin.getMspt();
 
         for (UUID playerId : yeetablePlayers) {
-            double kickmspt = customMsptThresholds.getOrDefault(playerId, plugin.getConfig().getDouble("kickmspt"));
+            int kickmspt = customMsptThresholds.getOrDefault(playerId, plugin.getConfig().getInt("kickmspt"));
             if (mspt > kickmspt) {
                 yeetPlayer(playerId);
             }
