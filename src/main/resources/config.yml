@@ -17,6 +17,6 @@ averageMSPTInterval: 600
 #start in automatic mode
 autoMode: true
 # MSPT value at which players will be kicked when they opted in. Set to 0 or negative to disable.
-kickmspt: 70.0
+kickmspt: 70
 # time people can still reconnect after being kicked in seconds
 rejoinDelay: 120
