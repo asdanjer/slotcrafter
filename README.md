@@ -30,7 +30,7 @@ SlotCrafter introduces several commands to manage slot limits, update configurat
 
 ### `/yeetme`
 
-- **Description:** Toggles the automatic kick feature for the user if the server's Mean Tick Time (MSPT) gets too high.
+- **Description:** Toggles the automatic kick feature for the user if the server's Mean Tick Time (MSPT) gets too high. with /yeetme <mspt> you can set a custome value
 - **Permission:** `slotcrafter.yeetme`
 
 ### `/yeetthem`
