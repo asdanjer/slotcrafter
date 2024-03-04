@@ -42,8 +42,12 @@ public class YeetCommand implements CommandExecutor {
                 if (args.length > 0) {
                     try {
                         double customMspt = (double) Integer.parseInt(args[0]);
-                        customMsptThresholds.put(player.getUniqueId(), customMspt);
-                        player.sendMessage("You will be automatically kicked when MSPT gets to " + customMspt + ".");
+                        if(customMspt>200 || customMspt<1){
+                            player.sendMessage("Invalid MSPT value. Using default.");
+                        }else{
+                            customMsptThresholds.put(player.getUniqueId(), customMspt);
+                            player.sendMessage("You will be automatically kicked when MSPT gets to " + customMspt + ".");
+                        }
                     } catch (NumberFormatException e) {
                         player.sendMessage("Invalid MSPT value. Using default.");
                     }
