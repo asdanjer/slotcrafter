@@ -25,3 +25,5 @@ replay_pid*
 /shelf/
 /workspace.xml
 /target/
+# GitHub Copilot persisted chat sessions
+/copilot/chatSessions

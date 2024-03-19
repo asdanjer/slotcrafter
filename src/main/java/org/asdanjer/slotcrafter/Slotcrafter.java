@@ -49,6 +49,7 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
         // Schedule repeating task to check MSPT and adjust player cap and yeet people
         manageTaskRunner();
         setPlayerCap(getConfig().getInt("minSlots"));
+        logger.info("Slotcrafter has been loaded!");
     }
     @EventHandler
     public void onPlayerLogin(PlayerLoginEvent event) {

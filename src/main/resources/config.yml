@@ -18,5 +18,9 @@ averageMSPTInterval: 600
 autoMode: true
 # MSPT value at which players will be kicked when they opted in. Set to 0 or negative to disable.
 kickmspt: 70
+# commands to execute when a player is kicked
+kickCommands:
+  - "kick <player> MSPT is too high!"
+  - "say <player> sacrificed himself for the greater good!"
 # time people can still reconnect after being kicked in seconds
 rejoinDelay: 120

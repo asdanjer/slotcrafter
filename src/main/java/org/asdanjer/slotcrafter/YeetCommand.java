@@ -6,9 +6,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.HashSet;
-import java.util.HashMap;
-import java.util.UUID;
+import java.util.*;
 
 public class YeetCommand implements CommandExecutor {
     private Slotcrafter plugin;
@@ -77,8 +75,8 @@ public class YeetCommand implements CommandExecutor {
 
     public void checkyeetability() {
         double mspt = plugin.getMspt();
-
-        for (UUID playerId : yeetablePlayers) {
+        Set<UUID> yeetablePlayersCopy = new HashSet<>(yeetablePlayers);
+        for (UUID playerId : yeetablePlayersCopy) {
             int kickmspt = customMsptThresholds.getOrDefault(playerId, plugin.getConfig().getInt("kickmspt"));
             if (mspt > kickmspt) {
                 yeetPlayer(playerId);
@@ -89,15 +87,21 @@ public class YeetCommand implements CommandExecutor {
     private void yeetPlayer(UUID playerId) {
         Player yeetablePlayer = Bukkit.getPlayer(playerId);
         if (yeetablePlayer != null) {
-            yeetablePlayer.kickPlayer("MSPT is too high!");
+            List<String> commands = plugin.getConfig().getStringList("kickCommands");
+            for (String command : commands) {
+                command = command.replace("<player>", yeetablePlayer.getName());
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
+            }
             customMsptThresholds.remove(playerId);
         }
         yeetablePlayers.remove(playerId);
     }
 
+
     private int yeetPlayers() {
         int yeetedPlayers = 0;
-        for (UUID playerId : yeetablePlayers) {
+        Set<UUID> yeetablePlayersCopy = new HashSet<>(yeetablePlayers);
+        for (UUID playerId : yeetablePlayersCopy) {
             yeetPlayer(playerId);
             yeetedPlayers++;
         }
