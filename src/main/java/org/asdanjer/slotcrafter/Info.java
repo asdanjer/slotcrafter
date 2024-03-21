@@ -29,12 +29,8 @@ public class Info {
         output += "Max Slots: " + plugin.getConfig().getInt("maxSlots") + "\n";
         output += "Lower MSPT Threshold: " + plugin.getConfig().getInt("lowerMSPTThreshold") + "\n";
         output += "Upper MSPT Threshold: " + plugin.getConfig().getInt("upperMSPTThreshold") + "\n";
-        output += "udate Interval: " + plugin.getConfig().getInt("updateInterval") + "\n";
-        //averageMSPTInterval
         output += "Average MSPT Interval: " + plugin.getConfig().getInt("averageMSPTInterval") + "\n";
-        //autoMode
         output += "Auto Mode: " + plugin.getConfig().getBoolean("autoMode") + "\n";
-        //kickmspt
         output += "Kick MSPT: " + plugin.getConfig().getInt("kickmspt") + "\n";
         output += "Auto Mode: " + mode + "\n";
         output += "Update Interval: " + plugin.getConfig().getInt("updateInterval") + "\n";
