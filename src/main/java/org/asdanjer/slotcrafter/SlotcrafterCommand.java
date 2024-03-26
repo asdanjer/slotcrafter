@@ -4,9 +4,11 @@ import org.bukkit.command.*;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class SlotcrafterCommand implements CommandExecutor, TabCompleter {
+    List<String> allowedsettingsList = Arrays.asList("minSlots", "maxSlots", "lowerMSPTThreshold", "upperMSPTThreshold", "updateInterval", "averageMSPTInterval", "autoMode", "kickmspt");
     private Slotcrafter plugin;
     private FileConfiguration config;
 
@@ -31,8 +33,10 @@ public class SlotcrafterCommand implements CommandExecutor, TabCompleter {
                 String value = args[2];
 
                 try {
-                    plugin.updateConfigValue(setting, value);
-                    sender.sendMessage("Config setting updated successfully.");
+                    if (allowedsettingsList.contains(setting)) {
+                        plugin.updateConfigValue(setting, value);
+                        sender.sendMessage("Config setting updated successfully.");
+                    }
                 } catch (IllegalArgumentException e) {
                     sender.sendMessage("Invalid setting or value. Please check and try again.");
                 }
@@ -56,14 +60,7 @@ public class SlotcrafterCommand implements CommandExecutor, TabCompleter {
             completions.add("update");
             completions.add("info");
         } else if (args.length == 2 && args[0].equalsIgnoreCase("update")){
-            completions.add("minSlots");
-            completions.add("maxSlots");
-            completions.add("lowerMSPTThreshold");
-            completions.add("upperMSPTThreshold");
-            completions.add("updateInterval");
-            completions.add("averageMSPTInterval");
-            completions.add("autoMode");
-            completions.add("kickmspt");
+            completions.addAll(allowedsettingsList);
 
         }else if (args.length == 3 && args[0].equalsIgnoreCase("update")) {
             String setting = args[1];
