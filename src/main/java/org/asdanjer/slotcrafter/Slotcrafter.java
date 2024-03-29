@@ -5,8 +5,10 @@ import me.lucko.spark.api.SparkProvider;
 import me.lucko.spark.api.statistic.StatisticWindow;
 import me.lucko.spark.api.statistic.misc.DoubleAverageInfo;
 import me.lucko.spark.api.statistic.types.GenericStatistic;
+import net.md_5.bungee.chat.SelectorComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -19,6 +21,7 @@ import java.util.UUID;
 import java.util.logging.Logger;
 import java.util.LinkedList;
 import org.bukkit.entity.Player;
+import de.myzelyam.api.vanish.VanishAPI;
 
 
 public final class Slotcrafter extends JavaPlugin implements Listener {
@@ -31,6 +34,8 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
     private BukkitTask task;
     Info info = new Info(this);
     HashMap<UUID, Long> recentLeavers = new HashMap<>();
+    private boolean slotsoppen = true;
+    private int realplayercap = 0;
     @Override
     public void onEnable() {
         this.saveDefaultConfig();
@@ -44,21 +49,28 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
         SlotLimitCommand slotLimitCommand = new SlotLimitCommand(this);
         getCommand("setslots").setExecutor(slotLimitCommand);
         getCommand("setslots").setTabCompleter(slotLimitCommand);
+        realplayercap=getConfig().getInt("minSlots");
 
 
         // Schedule repeating task to check MSPT and adjust player cap and yeet people
         manageTaskRunner();
         setPlayerCap(getConfig().getInt("minSlots"));
         logger.info("Slotcrafter has been loaded!");
+
     }
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerLogin(PlayerLoginEvent event) {
         Player player = event.getPlayer();
         UUID playerUUID = player.getUniqueId();
-        if (event.getResult() == PlayerLoginEvent.Result.KICK_FULL) {
-            if (player.hasPermission("slotcrafter.ignorecap") || isPlayerOnList(playerUUID)) {
+        if(slotsoppen){
+            event.allow();
+            logger.info("Slots are open");
+        }else if(!slotsoppen && event.getResult() == PlayerLoginEvent.Result.KICK_FULL && (player.hasPermission("slotcrafter.ignorecap") || isPlayerOnList(playerUUID))) {
                 event.allow();
-            }
+                logger.info("Player is on list");
+        }else {
+            event.disallow(PlayerLoginEvent.Result.KICK_FULL, "Server is full. Please try again later.");
+            logger.info("Server is full");
         }
     }
     private boolean isPlayerOnList(UUID playerUUID) {
@@ -116,12 +128,17 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
         int newPlayerCap;
         info.setMode(mode);
         info.setManualCap(manualCap);
+        int currentPlayers = 0;
+        double currentMSPT = getMspt();
+        currentPlayers = Bukkit.getOnlinePlayers().size();
+        if (isQuitEvent) {
+            currentPlayers--;
+        }
+        if (Bukkit.getPluginManager().isPluginEnabled("SuperVanish") || Bukkit.getPluginManager().isPluginEnabled("PremiumVanish")) {
+            currentPlayers -= VanishAPI.getInvisiblePlayers().size();
+            logger.info(" " + VanishAPI.getInvisiblePlayers().size());
+        }
         if (mode) {
-            double currentMSPT = getMspt();
-            int currentPlayers = Bukkit.getOnlinePlayers().size();
-            if(isQuitEvent){
-                currentPlayers--;
-            }
             int minSlots = getConfig().getInt("minSlots");
             System.out.printf(String.valueOf(minSlots));
             int maxSlots = getConfig().getInt("maxSlots");
@@ -132,7 +149,7 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
             } else if (currentMSPT > upperThreshold) {
                 newPlayerCap = Math.max(currentPlayers, minSlots);
             } else {
-                newPlayerCap = Bukkit.getMaxPlayers();
+                newPlayerCap = realplayercap;
             }
 
 
@@ -143,11 +160,11 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
         if (newPlayerCap <= 0) {
             newPlayerCap = 1;
         }
-        if (newPlayerCap != Bukkit.getMaxPlayers()) {
-            setPlayerCap(newPlayerCap);
-        }
+        logger.info("New player cap: " + newPlayerCap + " Current players: " + currentPlayers);
+        slotsoppen= newPlayerCap> currentPlayers;
+        realplayercap = newPlayerCap;
+        Bukkit.setMaxPlayers(realplayercap);
     }
-
     private void setPlayerCap(int newPlayerCap) {
         newPlayerCap = Math.max(newPlayerCap, getConfig().getInt("minSlots"));
         try {
@@ -234,5 +251,9 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
     public String getInfo() {
 
         return info.getfulldebugstring();
+    }
+
+    public int getRealplayercap() {
+        return realplayercap;
     }
 }

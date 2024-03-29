@@ -8,7 +8,7 @@ import java.util.UUID;
 public class Info {
     private HashSet yeetlist;
     private Slotcrafter plugin;
-    private  int currentLimit = Bukkit.getServer().getMaxPlayers();
+    private  int currentLimit = 0;
     private  int manualCap;
     private  boolean mode;
     private boolean averageMode;
@@ -21,6 +21,7 @@ public class Info {
 
     public Info(Slotcrafter plugin) {
         this.plugin = plugin;
+        currentLimit = plugin.getRealplayercap();
     }
     //getts all vlalues from this class as a nicly formatted string ready to be sent to the user
     public String getfulldebugstring(){

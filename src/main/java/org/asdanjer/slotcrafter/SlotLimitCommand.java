@@ -55,7 +55,7 @@ public class SlotLimitCommand implements CommandExecutor, TabCompleter {
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         List<String> completions = new ArrayList<>();
         if (args.length == 1) {
-            int currentLimit = Bukkit.getServer().getMaxPlayers();
+            int currentLimit = plugin.getRealplayercap();
             completions.add(String.valueOf(currentLimit + 1));
             completions.add("auto");
         }
