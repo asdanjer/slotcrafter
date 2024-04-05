@@ -64,13 +64,13 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
         UUID playerUUID = player.getUniqueId();
         if(slotsoppen){
             event.allow();
-            logger.info("Slots are open");
+            //logger.info("Slots are open");
         }else if(!slotsoppen && event.getResult() == PlayerLoginEvent.Result.KICK_FULL && (player.hasPermission("slotcrafter.ignorecap") || isPlayerOnList(playerUUID))) {
                 event.allow();
-                logger.info("Player is on list");
+                //logger.info("Player is on list");
         }else {
             event.disallow(PlayerLoginEvent.Result.KICK_FULL, "Server is full. Please try again later.");
-            logger.info("Server is full");
+            //logger.info("Server is full");
         }
     }
     private boolean isPlayerOnList(UUID playerUUID) {
@@ -136,7 +136,7 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
         }
         if (Bukkit.getPluginManager().isPluginEnabled("SuperVanish") || Bukkit.getPluginManager().isPluginEnabled("PremiumVanish")) {
             currentPlayers -= VanishAPI.getInvisiblePlayers().size();
-            logger.info(" " + VanishAPI.getInvisiblePlayers().size());
+            //logger.info(" " + VanishAPI.getInvisiblePlayers().size());
         }
         if (mode) {
             int minSlots = getConfig().getInt("minSlots");
@@ -160,7 +160,7 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
         if (newPlayerCap <= 0) {
             newPlayerCap = 1;
         }
-        logger.info("New player cap: " + newPlayerCap + " Current players: " + currentPlayers);
+        //logger.info("New player cap: " + newPlayerCap + " Current players: " + currentPlayers);
         slotsoppen= newPlayerCap> currentPlayers;
         realplayercap = newPlayerCap;
         Bukkit.setMaxPlayers(realplayercap);
