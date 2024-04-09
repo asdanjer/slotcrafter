@@ -38,6 +38,11 @@ SlotCrafter introduces several commands to manage slot limits, update configurat
 - **Description:** Kicks all players who have enabled the automatic kick feature.
 - **Permission:** `slotcrafter.yeetthem`
 
+### `/takemyslot <time in hours>`
+
+- **Description:** Allows outhers to take your slots if the Server is full after the time specified (default in config)
+- **Permission:** `slotcrafter.takemyslot`
+
 ## Configuration (`config.yml`)
 
 The `config.yml` file contains settings that control the behavior of the SlotCrafter plugin. Below are the available configuration options along with their descriptions:
@@ -51,6 +56,7 @@ MSPT = milliseconds per tick
 - `autoMode`: Determines whether the plugin starts in automatic mode, adjusting slots based on MSPT. (Default: `true`)
 - `kickmspt`: The MSPT value at which players who have opted in will be kicked. Set to `0` or a negative number to disable this feature. (Default: `70`)
 - `rejoinDelay`: The time people can still rejoin, ignoring player cap after disconnecting/losing connection. (Default: `120`)
+- `defaultTakeMySlotTime`: Delay bevor people can take your slot in hours. (Default: `1`)
 
 ### `slotcrafter.ignorecap`
 
