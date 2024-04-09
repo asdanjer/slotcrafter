@@ -29,6 +29,10 @@ public class TakeMySlotCommand implements CommandExecutor {
             sender.sendMessage("This command can only be used by a player.");
             return true;
         }
+        if (!(sender.hasPermission("slotcrafter.takemyslot"))) {
+            sender.sendMessage("Invalid Permission.");
+            return true;
+        }
 
         Player player = (Player) sender;
         UUID playerId = player.getUniqueId();
