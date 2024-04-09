@@ -24,3 +24,5 @@ kickCommands:
   - "say <player> sacrificed himself for the greater good!"
 # time people can still reconnect after being kicked in seconds
 rejoinDelay: 120
+#default time in hours for the takemyslot command (this is the time till the player is flagged to be kickable)
+defaultTakeMySlotTime: 1

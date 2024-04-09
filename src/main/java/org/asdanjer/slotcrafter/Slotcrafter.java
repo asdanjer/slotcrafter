@@ -16,10 +16,10 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.HashMap;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Logger;
-import java.util.LinkedList;
+import java.util.stream.Collectors;
+
 import org.bukkit.entity.Player;
 import de.myzelyam.api.vanish.VanishAPI;
 
@@ -36,6 +36,7 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
     HashMap<UUID, Long> recentLeavers = new HashMap<>();
     private boolean slotsoppen = true;
     private int realplayercap = 0;
+    TakeMySlotCommand takeMySlotCommand;
     @Override
     public void onEnable() {
         this.saveDefaultConfig();
@@ -49,7 +50,7 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
         SlotLimitCommand slotLimitCommand = new SlotLimitCommand(this);
         getCommand("setslots").setExecutor(slotLimitCommand);
         getCommand("setslots").setTabCompleter(slotLimitCommand);
-        TakeMySlotCommand takeMySlotCommand = new TakeMySlotCommand(this);
+        takeMySlotCommand = new TakeMySlotCommand(this);
         getCommand("takemyslot").setExecutor(takeMySlotCommand);
         realplayercap=getConfig().getInt("minSlots");
 
@@ -71,7 +72,28 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
                 event.allow();
                 //logger.info("Player is on list");
         }else {
-            event.disallow(PlayerLoginEvent.Result.KICK_FULL, "Server is full. Please try again later.");
+            long currentTime = System.currentTimeMillis();
+            List<Map.Entry<UUID, Long>> validEntries = takeMySlotCommand.getSlotOfferedPlayers().entrySet().stream()
+                    .filter(entry -> entry.getValue() <= currentTime)
+                    .collect(Collectors.toList());
+            if (!validEntries.isEmpty()) {
+                // Create a Random object
+                Random random = new Random();
+
+                // Get a random entry from the validEntries list
+                Map.Entry<UUID, Long> randomEntry = validEntries.get(random.nextInt(validEntries.size()));
+
+                // Now you have a random entry (player) who has offered their slot and their offer time is before the current time
+                UUID randomPlayerId = randomEntry.getKey();
+                try {
+                    Bukkit.getPlayer(randomPlayerId).kickPlayer("Your slot has been taken.");
+                }catch (Exception e){
+                    logger.warning("Coudn't kick player on list");
+                }
+                event.allow();
+            }else {
+                event.disallow(PlayerLoginEvent.Result.KICK_FULL, "Server is full. Please try again later.");
+            }
             //logger.info("Server is full");
         }
     }
@@ -103,6 +125,7 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
         recentLeavers.put(playerUUID, System.currentTimeMillis());
         yeetCommand.removeyeeter(event.getPlayer().getUniqueId());
         adjustPlayerCap(true);
+        takeMySlotCommand.removePLayer(playerUUID);
     }
     public void manageTaskRunner() {
         int updateInterval = getConfig().getInt("updateInterval");
