@@ -56,7 +56,7 @@ MSPT = milliseconds per tick
 - `autoMode`: Determines whether the plugin starts in automatic mode, adjusting slots based on MSPT. (Default: `true`)
 - `kickmspt`: The MSPT value at which players who have opted in will be kicked. Set to `0` or a negative number to disable this feature. (Default: `70`)
 - `rejoinDelay`: The time people can still rejoin, ignoring player cap after disconnecting/losing connection. (Default: `120`)
-- `defaultTakeMySlotTime`: Delay bevor people can take your slot. (Default: `1`)
+- `defaultTakeMySlotTime`: Delay bevor people can take your slot in hours. (Default: `1`)
 
 ### `slotcrafter.ignorecap`
 
