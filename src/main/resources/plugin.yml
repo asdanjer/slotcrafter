@@ -27,6 +27,10 @@ commands:
     description: Kick all players who have enabled automatic kick.
     usage: /<command>
     permission: slotcrafter.yeetthem
+    takemyslot:
+      description: Allows players to offer their slot for a specified time.
+      usage: /<command> <time in hours>
+      permission: slotcrafter.takemyslot
 permissions:
   slotcrafter.setslotlimit:
     description: Allows access to the SlotLimitCommand.
@@ -43,3 +47,6 @@ permissions:
   slotcrafter.ignorecap:
     description: Allows people to ignore the slot cap.
     default: op
+  slotcrafter.takemyslot:
+    description: Allows people to offer their slot.
+    default: true

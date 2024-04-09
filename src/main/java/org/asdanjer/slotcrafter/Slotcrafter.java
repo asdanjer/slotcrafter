@@ -49,6 +49,8 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
         SlotLimitCommand slotLimitCommand = new SlotLimitCommand(this);
         getCommand("setslots").setExecutor(slotLimitCommand);
         getCommand("setslots").setTabCompleter(slotLimitCommand);
+        TakeMySlotCommand takeMySlotCommand = new TakeMySlotCommand(this);
+        getCommand("takemyslot").setExecutor(takeMySlotCommand);
         realplayercap=getConfig().getInt("minSlots");
 
 
