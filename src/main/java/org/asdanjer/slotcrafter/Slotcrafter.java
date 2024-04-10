@@ -61,6 +61,10 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new SlotcrafterPlaceholderExpansion(this,yeetCommand,takeMySlotCommand,info).register();
         }
+        if(getConfig().getInt("ReminderInterval")>0||getConfig().getInt("HighMSPTWarningInterval")>0){
+            ReminderActionBar reminderActionBar = new ReminderActionBar(this,yeetCommand,takeMySlotCommand,info);
+            reminderActionBar.start();
+        }
         logger.info("Slotcrafter has been loaded!");
 
     }
