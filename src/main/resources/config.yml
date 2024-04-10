@@ -1,5 +1,6 @@
 # config.yml
 
+#These settings can be changed while the server is running
 #the Plugin will not go below this amount of slots
 minSlots: 10
 #the Plugin will not go above this amount of slots
@@ -18,11 +19,30 @@ averageMSPTInterval: 600
 autoMode: true
 # MSPT value at which players will be kicked when they opted in. Set to 0 or negative to disable.
 kickmspt: 70
+# time people can still reconnect after being kicked in seconds
+rejoinDelay: 120
+
+# these settings can't be changed while the server is running
 # commands to execute when a player is kicked
 kickCommands:
   - "kick <player> MSPT is too high!"
   - "say <player> sacrificed himself for the greater good!"
-# time people can still reconnect after being kicked in seconds
-rejoinDelay: 120
 #default time in hours for the takemyslot command (this is the time till the player is flagged to be kickable)
 defaultTakeMySlotTime: 1
+#action bar reminders set to 0 for off
+# Interval in seconds for reminders when /yeetme or /takemyslot are active.
+ReminderInterval: 0
+
+# Interval in seconds to warn players when the Mean Server Tick Time (MSPT) is high.
+HighMSPTWarningInterval: 0
+
+# Message to display for the /yeetme command reminder.
+YeetmeMessage: "Lag-Autokick active. /yeetme to toggle off"
+
+# Message to display for the /takemyslot command reminder.
+TakemyslotMessage: "Slot-Surrender active. /takemyslot to toggle off"
+
+# Message to display when the MSPT is high.
+HighMSPTWarningMessage: "High MSPT. Avoid laggy areas if possible"
+# MSPT Threshold for the high MSPT warning.
+HighMSPTThreshold: 70
