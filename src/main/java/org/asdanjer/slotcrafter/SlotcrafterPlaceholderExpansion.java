@@ -67,6 +67,8 @@ public class SlotcrafterPlaceholderExpansion extends PlaceholderExpansion {
             if (!offeringplayers.isEmpty()){
             int hours = (int)(((offeringplayers.get(player.getUniqueId()) - System.currentTimeMillis())/3600000)+1);
             Bukkit.getLogger().info("Hours: " + hours);
+            Bukkit.getLogger().info(""+offeringplayers.get(player.getUniqueId())/3600000);
+                Bukkit.getLogger().info(""+System.currentTimeMillis()/3600000);
             if (offeringplayers.containsKey(player.getUniqueId())) {
                 return String.valueOf(hours);
             }else{

@@ -16,7 +16,6 @@ public class TakeMySlotCommand implements CommandExecutor {
     private FileConfiguration config;
 
 
-
     public TakeMySlotCommand(Slotcrafter plugin) {
         this.plugin = plugin;
         this.slotOfferedPlayers = new HashMap<>();
@@ -37,28 +36,28 @@ public class TakeMySlotCommand implements CommandExecutor {
         Player player = (Player) sender;
         UUID playerId = player.getUniqueId();
         int hours = config.getInt("defaultTakeMySlotTime", 1);
-
+        long time = System.currentTimeMillis();
         if (args.length > 0) {
             try {
                 hours= Integer.parseInt(args[0]);
                 if (hours > 24) {
                     sender.sendMessage("Can't offer slot after more than 24 hours. Using default time!");
                     hours = config.getInt("defaultTakeMySlotTime", 1);
-                    slotOfferedPlayers.put(playerId, (long)hours*3600000);
+                    slotOfferedPlayers.put(playerId, ((long)hours*3600000)+time);
                     return true;
                 }
-                slotOfferedPlayers.put(playerId, (long)hours*3600000);
+                slotOfferedPlayers.put(playerId, ((long)hours*3600000)+time);
                 sender.sendMessage("you offer your slot starting in " + hours + " hours.");
             } catch (NumberFormatException e) {
                 sender.sendMessage("Wrong value Using default time!");
-                slotOfferedPlayers.put(playerId, (long)hours*3600000);
+                slotOfferedPlayers.put(playerId, ((long)hours*3600000)+time);
             }
         } else {
             if (slotOfferedPlayers.containsKey(playerId)) {
                 slotOfferedPlayers.remove(playerId);
                 sender.sendMessage("You do no longer offer your slot.");
             } else {
-                slotOfferedPlayers.put(playerId, (long)hours*3600000);
+                slotOfferedPlayers.put(playerId, ((long)hours*3600000)+time);
                 sender.sendMessage("you offer your slot starting in " + hours + " hours.");
             }
         }
