@@ -61,19 +61,18 @@ MSPT = milliseconds per tick
   - `"kick <player> MSPT is too high!"`
   - `"say <player> sacrificed himself for the greater good!"`
 
-- **ReminderInterval**: Interval in seconds for reminders when `/yeetme` or `/takemyslot` commands are active. Set to `0` to disable reminders. (Default: `0`)
+- `ReminderInterval`: Interval in seconds for reminders when `/yeetme` or `/takemyslot` commands are active. Set to `0` to disable reminders. (Default: `0`)
 
-- **HighMSPTWarningInterval**: Interval in seconds to warn players when the Mean Server Tick Time (MSPT) is high. Set to `0` to disable warnings. (Default: `0`)
+- `HighMSPTWarningInterval`: Interval in seconds to warn players when the Mean Server Tick Time (MSPT) is high. Set to `0` to disable warnings. (Default: `0`)
 
-- **YeetmeMessage**: Message displayed for the `/yeetme` command reminder. (Default: `"Lag-Autokick active. /yeetme to toggle off"`)
+- `YeetmeMessage`: Message displayed for the `/yeetme` command reminder. (Default: `"Lag-Autokick active. /yeetme to toggle off"`)
 
-- **TakemyslotMessage**: Message displayed for the `/takemyslot` command reminder. (Default: `"Slot-Surrender active. /takemyslot to toggle off"`)
+- `TakemyslotMessage`: Message displayed for the `/takemyslot` command reminder. (Default: `"Slot-Surrender active. /takemyslot to toggle off"`)
 
-- **HighMSPTWarningMessage**: Message to display when the MSPT is high, advising players to avoid laggy areas if possible. (Default: `"High MSPT. Avoid laggy areas if possible"`)
+- `HighMSPTWarningMessage`: Message to display when the MSPT is high, advising players to avoid laggy areas if possible. (Default: `"High MSPT. Avoid laggy areas if possible"`)
 
-- **HighMSPTThreshold**: MSPT threshold to trigger the high MSPT warning. This setting overlaps with `kickmspt` for warning purposes. (Default: `70`)
+- `HighMSPTThreshold`: MSPT threshold to trigger the high MSPT warning. This setting overlaps with `kickmspt` for warning purposes. (Default: `70`)
 
-This comprehensive configuration allows detailed control over server slot management based on server performance, enhancing gameplay by adjusting in real-time to current server conditions.
 ### `slotcrafter.ignorecap`
 
 - **Description:** Allows people to ignore the slot cap.
