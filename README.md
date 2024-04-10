@@ -57,7 +57,8 @@ MSPT = milliseconds per tick
 - `kickmspt`: The MSPT value at which players who have opted in will be kicked. Set to `0` or a negative number to disable this feature. (Default: `70`)
 - `rejoinDelay`: The time people can still rejoin, ignoring player cap after disconnecting/losing connection. (Default: `120`)
 - `defaultTakeMySlotTime`: Delay bevor people can take your slot in hours. (Default: `1`)
-- `kickCommands`: Commands to execute when a player is kicked. These settings cannot be changed while the server is running.
+###Configuration that can't be changed ingame
+- `kickCommands`: Commands to execute when a player is kicked. 
 
 - `ReminderInterval`: Interval in seconds for reminders when `/yeetme` or `/takemyslot` commands are active. Set to `0` to disable reminders. (Default: `0`)
 
