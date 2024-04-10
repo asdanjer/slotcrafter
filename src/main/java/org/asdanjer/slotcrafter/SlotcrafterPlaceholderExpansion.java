@@ -1,8 +1,6 @@
 package org.asdanjer.slotcrafter;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import org.asdanjer.slotcrafter.TakeMySlotCommand;
-import org.asdanjer.slotcrafter.YeetCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -10,7 +8,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.HashMap;
 import java.util.UUID;
 
-import static java.awt.SystemColor.info;
 
 public class SlotcrafterPlaceholderExpansion extends PlaceholderExpansion {
 
