@@ -42,6 +42,7 @@ public class TakeMySlotCommand implements CommandExecutor {
             try {
                 hours= Integer.parseInt(args[0]);
                 slotOfferedPlayers.put(playerId, (long)hours*3600000);
+                sender.sendMessage("you offer your slot starting in " + hours + " hours.");
             } catch (NumberFormatException e) {
                 sender.sendMessage("Wrong value Using default time!");
                 slotOfferedPlayers.put(playerId, (long)hours*3600000);
