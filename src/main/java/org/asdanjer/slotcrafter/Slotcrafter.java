@@ -58,6 +58,9 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
         // Schedule repeating task to check MSPT and adjust player cap and yeet people
         manageTaskRunner();
         setPlayerCap(getConfig().getInt("minSlots"));
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new SlotcrafterPlaceholderExpansion(this,yeetCommand,takeMySlotCommand,info).register();
+        }
         logger.info("Slotcrafter has been loaded!");
 
     }
@@ -272,25 +275,6 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
 
         this.saveConfig();
         manageTaskRunner();
-    }
-    @Override
-    public String onPlaceholderRequest(Player player, String identifier) {
-        if (player == null) {
-            return "";
-        }
-
-        // %slotcrafter_yeetable%
-        if (identifier.equals("yeetable")) {
-
-            return Boolean.toString(yeetCommand.getYeetablePlayers().contains(player.getUniqueId()));
-        }
-
-        // %slotcrafter_slotdonor%
-        if (identifier.equals("slotdonor")) {
-            return Boolean.toString(takeMySlotCommand.getSlotOfferedPlayers().containsKey(player.getUniqueId()));
-        }
-
-        return null;
     }
     public String getInfo() {
 

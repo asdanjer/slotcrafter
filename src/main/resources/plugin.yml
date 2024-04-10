@@ -1,6 +1,8 @@
 name: slotcrafter
 version: '${project.version}'
 main: org.asdanjer.slotcrafter.Slotcrafter
+author: asdanjer
+description: A plugin dynamically regulating slot limits based on server performance.
 depend:
   - spark
 softdepend:

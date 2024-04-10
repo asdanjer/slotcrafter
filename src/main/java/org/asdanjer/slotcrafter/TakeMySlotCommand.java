@@ -41,6 +41,12 @@ public class TakeMySlotCommand implements CommandExecutor {
         if (args.length > 0) {
             try {
                 hours= Integer.parseInt(args[0]);
+                if (hours > 24) {
+                    sender.sendMessage("Can't offer slot after more than 24 hours. Using default time!");
+                    hours = config.getInt("defaultTakeMySlotTime", 1);
+                    slotOfferedPlayers.put(playerId, (long)hours*3600000);
+                    return true;
+                }
                 slotOfferedPlayers.put(playerId, (long)hours*3600000);
                 sender.sendMessage("you offer your slot starting in " + hours + " hours.");
             } catch (NumberFormatException e) {

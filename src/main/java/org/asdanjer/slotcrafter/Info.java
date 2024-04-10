@@ -97,5 +97,13 @@ public class Info {
     public void setYeetablePlayers(HashSet<UUID> yeetablePlayers) {
         this.yeetablePlayers = yeetablePlayers;
     }
+    public int getCurrentlyUsedMSPT(){
+        if(averageMode){
+            return averageMspt;
+        }
+        else {
+            return curentMspt;
+        }
+    }
 
 }
