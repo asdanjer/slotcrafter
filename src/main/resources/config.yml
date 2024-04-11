@@ -30,10 +30,10 @@ kickCommands:
 #default time in hours for the takemyslot command (this is the time till the player is flagged to be kickable)
 defaultTakeMySlotTime: 1
 #action bar reminders set to 0 for off
-# Interval in seconds for reminders when /yeetme or /takemyslot are active.
+# Interval in seconds for reminders when /yeetme or /takemyslot are active. (0 for off)
 ReminderInterval: 0
 
-# Interval in seconds to warn players when the Mean Server Tick Time (MSPT) is high.
+# Interval in seconds to warn players when the Mean Server Tick Time (MSPT) is high.(0 for off)
 HighMSPTWarningInterval: 0
 
 # Message to display for the /yeetme command reminder.
