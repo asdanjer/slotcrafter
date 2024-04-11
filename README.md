@@ -57,6 +57,20 @@ MSPT = milliseconds per tick
 - `kickmspt`: The MSPT value at which players who have opted in will be kicked. Set to `0` or a negative number to disable this feature. (Default: `70`)
 - `rejoinDelay`: The time people can still rejoin, ignoring player cap after disconnecting/losing connection. (Default: `120`)
 - `defaultTakeMySlotTime`: Delay bevor people can take your slot in hours. (Default: `1`)
+###Configuration that can't be changed ingame
+- `kickCommands`: Commands to execute when a player is kicked. 
+
+- `ReminderInterval`: Interval in seconds for reminders when `/yeetme` or `/takemyslot` commands are active. Set to `0` to disable reminders. (Default: `0`)
+
+- `HighMSPTWarningInterval`: Interval in seconds to warn players when the Mean Server Tick Time (MSPT) is high. Set to `0` to disable warnings. (Default: `0`)
+
+- `YeetmeMessage`: Message displayed for the `/yeetme` command reminder. (Default: `"Lag-Autokick active. /yeetme to toggle off"`)
+
+- `TakemyslotMessage`: Message displayed for the `/takemyslot` command reminder. (Default: `"Slot-Surrender active. /takemyslot to toggle off"`)
+
+- `HighMSPTWarningMessage`: Message to display when the MSPT is high, advising players to avoid laggy areas if possible. (Default: `"High MSPT. Avoid laggy areas if possible"`)
+
+- `HighMSPTThreshold`: MSPT threshold to trigger the high MSPT warning. This setting overlaps with `kickmspt` for warning purposes. (Default: `70`)
 
 ### `slotcrafter.ignorecap`
 
