@@ -43,22 +43,20 @@ public class TakeMySlotCommand implements CommandExecutor {
                 if (hours > 24) {
                     sender.sendMessage("Can't offer slot after more than 24 hours. Using default time!");
                     hours = config.getInt("defaultTakeMySlotTime", 1);
-                    slotOfferedPlayers.put(playerId, ((long)hours*3600000)+time);
-                    return true;
-                }
-                slotOfferedPlayers.put(playerId, ((long)hours*3600000)+time);
+                }else{
                 sender.sendMessage("you offer your slot starting in " + hours + " hours.");
+                }
             } catch (NumberFormatException e) {
                 sender.sendMessage("Wrong value Using default time!");
-                slotOfferedPlayers.put(playerId, ((long)hours*3600000)+time);
             }
+            slotOfferedPlayers.put(playerId, ((long)hours*3600000)+time);
         } else {
             if (slotOfferedPlayers.containsKey(playerId)) {
-                slotOfferedPlayers.remove(playerId);
                 sender.sendMessage("You do no longer offer your slot.");
+                slotOfferedPlayers.remove(playerId);
             } else {
-                slotOfferedPlayers.put(playerId, ((long)hours*3600000)+time);
                 sender.sendMessage("you offer your slot starting in " + hours + " hours.");
+                slotOfferedPlayers.put(playerId, ((long)hours*3600000)+time);
             }
         }
 

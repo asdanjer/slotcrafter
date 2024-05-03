@@ -5,7 +5,6 @@ import me.lucko.spark.api.SparkProvider;
 import me.lucko.spark.api.statistic.StatisticWindow;
 import me.lucko.spark.api.statistic.misc.DoubleAverageInfo;
 import me.lucko.spark.api.statistic.types.GenericStatistic;
-import net.md_5.bungee.chat.SelectorComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -43,17 +42,16 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
         Bukkit.getServer().getPluginManager().registerEvents(this, this);
         this.yeetCommand = new YeetCommand(this);
         SlotcrafterCommand slotcrafterCommand = new SlotcrafterCommand(this);
+        SlotLimitCommand slotLimitCommand = new SlotLimitCommand(this);
+        takeMySlotCommand = new TakeMySlotCommand(this);
+        realplayercap=getConfig().getInt("minSlots");
         getCommand("slotcrafter").setExecutor(slotcrafterCommand);
         getCommand("slotcrafter").setTabCompleter(slotcrafterCommand);
         getCommand("yeetme").setExecutor(yeetCommand);
         getCommand("yeetthem").setExecutor(yeetCommand);
-        SlotLimitCommand slotLimitCommand = new SlotLimitCommand(this);
         getCommand("setslots").setExecutor(slotLimitCommand);
         getCommand("setslots").setTabCompleter(slotLimitCommand);
-        takeMySlotCommand = new TakeMySlotCommand(this);
         getCommand("takemyslot").setExecutor(takeMySlotCommand);
-        realplayercap=getConfig().getInt("minSlots");
-
 
         // Schedule repeating task to check MSPT and adjust player cap and yeet people
         manageTaskRunner();
@@ -72,37 +70,43 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
     public void onPlayerLogin(PlayerLoginEvent event) {
         Player player = event.getPlayer();
         UUID playerUUID = player.getUniqueId();
-        if(slotsoppen){
+        if (slotsoppen) {
             event.allow();
             //logger.info("Slots are open");
-        }else if(!slotsoppen && event.getResult() == PlayerLoginEvent.Result.KICK_FULL && (player.hasPermission("slotcrafter.ignorecap") || isPlayerOnList(playerUUID))) {
-                event.allow();
-                //logger.info("Player is on list");
-        }else {
-            long currentTime = System.currentTimeMillis();
-            List<Map.Entry<UUID, Long>> validEntries = takeMySlotCommand.getSlotOfferedPlayers().entrySet().stream()
-                    .filter(entry -> entry.getValue() <= currentTime)
-                    .collect(Collectors.toList());
-            if (!validEntries.isEmpty()) {
-                // Create a Random object
-                Random random = new Random();
-
-                // Get a random entry from the validEntries list
-                Map.Entry<UUID, Long> randomEntry = validEntries.get(random.nextInt(validEntries.size()));
-
-                // Now you have a random entry (player) who has offered their slot and their offer time is before the current time
-                UUID randomPlayerId = randomEntry.getKey();
-                try {
-                    Bukkit.getPlayer(randomPlayerId).kickPlayer("Your slot has been taken.");
-                }catch (Exception e){
-                    logger.warning("Coudn't kick player on list");
-                }
-                event.allow();
-            }else {
-                event.disallow(PlayerLoginEvent.Result.KICK_FULL, "Server is full. Please try again later.");
-            }
+        } else if (!slotsoppen && event.getResult() == PlayerLoginEvent.Result.KICK_FULL && (player.hasPermission("slotcrafter.ignorecap") || isPlayerOnList(playerUUID))) {
+            event.allow();
+            //logger.info("Player is on list");
+        } else if (kickRandomWillingPlayer()) {
+            event.allow();
+            //logger.info("Kicked random willing player");
+        } else {
+            event.disallow(PlayerLoginEvent.Result.KICK_FULL, "Server is full. Please try again later.");
             //logger.info("Server is full");
         }
+    }
+    private boolean kickRandomWillingPlayer() {
+        long currentTime = System.currentTimeMillis();
+        List<Map.Entry<UUID, Long>> validEntries = takeMySlotCommand.getSlotOfferedPlayers().entrySet().stream()
+                .filter(entry -> entry.getValue() <= currentTime)
+                .collect(Collectors.toList());
+        if (!validEntries.isEmpty()) {
+            // Create a Random object
+            Random random = new Random();
+
+            // Get a random entry from the validEntries list
+            Map.Entry<UUID, Long> randomEntry = validEntries.get(random.nextInt(validEntries.size()));
+
+            // Now you have a random entry (player) who has offered their slot and their offer time is before the current time
+            UUID randomPlayerId = randomEntry.getKey();
+            try {
+                Bukkit.getPlayer(randomPlayerId).kickPlayer("Your slot has been taken.");
+                return true;
+            }catch (Exception e){
+                logger.warning("Coudn't kick player on list");
+                return false;
+            }
+        }
+        return false;
     }
     private boolean isPlayerOnList(UUID playerUUID) {
         Long leaveTime = recentLeavers.get(playerUUID);
@@ -203,7 +207,6 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
             Bukkit.setMaxPlayers(newPlayerCap);
         } catch (Exception e) {
             logger.severe("Failed to adjust player cap: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
