@@ -36,14 +36,15 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
     private boolean slotsoppen = true;
     private int realplayercap = 0;
     TakeMySlotCommand takeMySlotCommand;
+    Persistency persistency;
     @Override
     public void onEnable() {
         this.saveDefaultConfig();
         Bukkit.getServer().getPluginManager().registerEvents(this, this);
-        this.yeetCommand = new YeetCommand(this);
+        this.yeetCommand = new YeetCommand(this,persistency);
         SlotcrafterCommand slotcrafterCommand = new SlotcrafterCommand(this);
         SlotLimitCommand slotLimitCommand = new SlotLimitCommand(this);
-        takeMySlotCommand = new TakeMySlotCommand(this);
+        takeMySlotCommand = new TakeMySlotCommand(this,persistency);
         realplayercap=getConfig().getInt("minSlots");
         getCommand("slotcrafter").setExecutor(slotcrafterCommand);
         getCommand("slotcrafter").setTabCompleter(slotcrafterCommand);
@@ -63,6 +64,7 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
             ReminderActionBar reminderActionBar = new ReminderActionBar(this,yeetCommand,takeMySlotCommand,info);
             reminderActionBar.start();
         }
+        persistency = new Persistency(this,yeetCommand,takeMySlotCommand);
         logger.info("Slotcrafter has been loaded!");
 
     }
@@ -80,7 +82,12 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
             event.allow();
             //logger.info("Kicked random willing player");
         } else {
-            event.disallow(PlayerLoginEvent.Result.KICK_FULL, "Server is full. Please try again later.");
+            try {
+                event.disallow(PlayerLoginEvent.Result.KICK_FULL,getConfig().getString("Server_Full_MSG") );
+            } catch (Exception e) {
+                event.disallow(PlayerLoginEvent.Result.KICK_FULL,"Server is full.Please try again later.");
+            }
+
             //logger.info("Server is full");
         }
     }
@@ -128,8 +135,8 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         adjustPlayerCap(false);
+        persistency.loadData(event.getPlayer());
     }
-
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         UUID playerUUID = event.getPlayer().getUniqueId();

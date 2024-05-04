@@ -12,11 +12,16 @@ public class YeetCommand implements CommandExecutor {
     private Slotcrafter plugin;
     private HashSet<UUID> yeetablePlayers;
     private HashMap<UUID, Integer> customMsptThresholds;
+    private Persistency persistency;
+    //resonable limits for custome mspt values
+    private final int MAXMSPT = 200;
+    private final int MINMSPT = 1;
 
-    public YeetCommand(Slotcrafter plugin) {
+    public YeetCommand(Slotcrafter plugin, Persistency persistency) {
         this.plugin = plugin;
         this.yeetablePlayers = new HashSet<>();
         this.customMsptThresholds = new HashMap<>();
+        this.persistency = persistency;
     }
 
     @Override
@@ -38,9 +43,42 @@ public class YeetCommand implements CommandExecutor {
             } else {
                 yeetablePlayers.add(player.getUniqueId());
                 if (args.length > 0) {
+                    if(args[0].equalsIgnoreCase("help")){
+                        sender.sendMessage("Using this comand will kick you automatically when the server is at"+ plugin.getConfig().getInt("kickmspt") + "MSPT. You can change this value by using /yeetme <mspt>. To stop being yeetable use /yeetme again.");
+                        return true;
+                    }
+                    //persitencycheck
+                    if(args[0].equalsIgnoreCase("persistent")){
+                        if(args.length==1){
+                            player.sendMessage("Usage: /yeetme persistent <on/off/mspt-value> ");
+                            return true;
+                        }
+                        if(args[1].equalsIgnoreCase("off")){
+                            persistency.togglePersitencyYeet(player,-1,false);
+                            player.sendMessage("Disabled Persistent Yeet");
+                        }else if(args[1].equalsIgnoreCase("on")){
+                            persistency.togglePersitencyYeet(player,plugin.getConfig().getInt("kickmspt"),true);
+                            player.sendMessage("Enabled Persistent Yeet");
+                        }else{
+                            try{
+                                int msptvalue=Integer.parseInt(args[1]);
+                                if(msptvalue>MAXMSPT || msptvalue<MINMSPT){
+                                    player.sendMessage("Invalid MSPT value. Using default.");
+                                    msptvalue=plugin.getConfig().getInt("kickmspt");
+                                }
+                                persistency.togglePersitencyYeet(player,msptvalue,true);
+                                player.sendMessage("Enabled Persistent Yeet");
+                            } catch (NumberFormatException e) {
+                                player.sendMessage("Usage: /yeetme persistent <on/off/mspt-value> ");
+                            }
+
+                        }
+                        return true;
+                    }
+
                     try {
                         int customMspt = Integer.parseInt(args[0]);
-                        if(customMspt>200 || customMspt<1){
+                        if(customMspt>MAXMSPT || customMspt<MINMSPT){
                             player.sendMessage("Invalid MSPT value. Using default.");
                         }else{
                             customMsptThresholds.put(player.getUniqueId(), customMspt);
@@ -67,10 +105,9 @@ public class YeetCommand implements CommandExecutor {
     }
 
     public void removeyeeter(UUID player) {
-        if (yeetablePlayers.contains(player)) {
-            yeetablePlayers.remove(player);
-            customMsptThresholds.remove(player);
-        }
+        yeetablePlayers.remove(player);
+        customMsptThresholds.remove(player);
+
     }
 
     public void checkyeetability() {
@@ -110,5 +147,16 @@ public class YeetCommand implements CommandExecutor {
 
     public HashSet<UUID> getYeetablePlayers() {
         return yeetablePlayers;
+    }
+
+    public void addYeetablePlayer(UUID playerId) {
+        yeetablePlayers.add(playerId);
+    }
+
+    public void addYeetablePlayer(UUID playerId, int customMspt) {
+        yeetablePlayers.add(playerId);
+        if(!(customMspt > MAXMSPT || customMspt < MINMSPT)){
+            customMsptThresholds.put(playerId, customMspt);
+        }
     }
 }

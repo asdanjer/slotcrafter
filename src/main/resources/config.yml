@@ -46,3 +46,5 @@ TakemyslotMessage: "Slot-Surrender active. /takemyslot to toggle off"
 HighMSPTWarningMessage: "High MSPT. Avoid laggy areas if possible"
 # MSPT Threshold for the high MSPT warning.
 HighMSPTThreshold: 70
+#Message to display when the server is full
+Server_Full_MSG: "Server is full. Please try again later."
