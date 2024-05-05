@@ -10,13 +10,15 @@ public class Persistency {
     private Slotcrafter plugin;
     private YeetCommand yeetCommand;
     private TakeMySlotCommand takeMySlotCommand;
-    private final NamespacedKey yeetstorage= new NamespacedKey(plugin,"yeetmspt");
-    private final NamespacedKey takeslotdelay= new NamespacedKey(plugin,"takeslotdelay");
+    private final NamespacedKey yeetstorage;
+    private final NamespacedKey takeslotdelay;
     //constructor
     public Persistency(Slotcrafter plugin, YeetCommand yeetCommand, TakeMySlotCommand takeMySlotCommand) {
         this.plugin = plugin;
         this.yeetCommand = yeetCommand;
         this.takeMySlotCommand = takeMySlotCommand;
+        yeetstorage= new NamespacedKey(plugin,"yeetmspt");
+        takeslotdelay= new NamespacedKey(plugin,"takeslotdelay");
 
     }
     public void loadData(Player player){
