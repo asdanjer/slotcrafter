@@ -41,18 +41,24 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
     public void onEnable() {
         this.saveDefaultConfig();
         Bukkit.getServer().getPluginManager().registerEvents(this, this);
+
+        persistency = new Persistency(this);
         this.yeetCommand = new YeetCommand(this,persistency);
+        takeMySlotCommand = new TakeMySlotCommand(this,persistency);
+        persistency.setcommands(yeetCommand,takeMySlotCommand);
         SlotcrafterCommand slotcrafterCommand = new SlotcrafterCommand(this);
         SlotLimitCommand slotLimitCommand = new SlotLimitCommand(this);
-        takeMySlotCommand = new TakeMySlotCommand(this,persistency);
         realplayercap=getConfig().getInt("minSlots");
+
         getCommand("slotcrafter").setExecutor(slotcrafterCommand);
         getCommand("slotcrafter").setTabCompleter(slotcrafterCommand);
         getCommand("yeetme").setExecutor(yeetCommand);
+        getCommand("yeetme").setTabCompleter(yeetCommand);
         getCommand("yeetthem").setExecutor(yeetCommand);
         getCommand("setslots").setExecutor(slotLimitCommand);
         getCommand("setslots").setTabCompleter(slotLimitCommand);
         getCommand("takemyslot").setExecutor(takeMySlotCommand);
+        getCommand("takemyslot").setTabCompleter(takeMySlotCommand);
 
         // Schedule repeating task to check MSPT and adjust player cap and yeet people
         manageTaskRunner();
@@ -64,7 +70,6 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
             ReminderActionBar reminderActionBar = new ReminderActionBar(this,yeetCommand,takeMySlotCommand,info);
             reminderActionBar.start();
         }
-        persistency = new Persistency(this,yeetCommand,takeMySlotCommand);
         logger.info("Slotcrafter has been loaded!");
 
     }

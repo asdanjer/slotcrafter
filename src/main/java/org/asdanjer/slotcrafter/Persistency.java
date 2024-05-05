@@ -13,10 +13,8 @@ public class Persistency {
     private final NamespacedKey yeetstorage;
     private final NamespacedKey takeslotdelay;
     //constructor
-    public Persistency(Slotcrafter plugin, YeetCommand yeetCommand, TakeMySlotCommand takeMySlotCommand) {
+    public Persistency(Slotcrafter plugin) {
         this.plugin = plugin;
-        this.yeetCommand = yeetCommand;
-        this.takeMySlotCommand = takeMySlotCommand;
         yeetstorage= new NamespacedKey(plugin,"yeetmspt");
         takeslotdelay= new NamespacedKey(plugin,"takeslotdelay");
 
@@ -64,5 +62,10 @@ public class Persistency {
         }else{
             pdc.set(takeslotdelay,PersistentDataType.INTEGER,value);
         }
+    }
+    //this needs to be invoced bevor this class is used
+    public void setcommands(YeetCommand yeetCommand, TakeMySlotCommand takeMySlotCommand){
+        this.yeetCommand=yeetCommand;
+        this.takeMySlotCommand=takeMySlotCommand;
     }
 }

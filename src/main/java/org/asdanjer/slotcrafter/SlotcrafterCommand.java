@@ -2,6 +2,7 @@ package org.asdanjer.slotcrafter;
 
 import org.bukkit.command.*;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,20 +55,24 @@ public class SlotcrafterCommand implements CommandExecutor, TabCompleter {
         return true;
     }
     @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        List<String> completions = new ArrayList<>();
-        if (args.length == 1) {
-            completions.add("update");
-            completions.add("info");
-        } else if (args.length == 2 && args[0].equalsIgnoreCase("update")){
-            completions.addAll(allowedsettingsList);
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
+        try {
+            List<String> completions = new ArrayList<>();
+            if (args.length == 1) {
+                completions.add("update");
+                completions.add("info");
+            } else if (args.length == 2 && args[0].equalsIgnoreCase("update")){
+                completions.addAll(allowedsettingsList);
 
-        }else if (args.length == 3 && args[0].equalsIgnoreCase("update")) {
-            String setting = args[1];
-            if (config.isSet(setting)) {
-                completions.add(String.valueOf(config.get(setting)));
+            }else if (args.length == 3 && args[0].equalsIgnoreCase("update")) {
+                String setting = args[1];
+                if (config.isSet(setting)) {
+                    completions.add(String.valueOf(config.get(setting)));
+                }
             }
+            return completions;
+        } catch (Exception e) {
+            return new ArrayList<>();
         }
-        return completions;
     }
 }
