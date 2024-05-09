@@ -44,14 +44,13 @@ public class YeetCommand implements CommandExecutor, TabCompleter {
                 customMsptThresholds.remove(player.getUniqueId());
                 player.sendMessage("You will not be automatically kicked anymore.");
             } else {
-                yeetablePlayers.add(player.getUniqueId());
                 if (args.length > 0) {
                     if(args[0].equalsIgnoreCase("help")){
                         sendhelpmessage(player,plugin.getConfig().getInt("kickmspt"));
                         return true;
                     }
                     //persitencycheck
-                    if(args[0].equalsIgnoreCase("persistent")){
+                    if(args[0].equalsIgnoreCase("persistent") && plugin.dopersitency){
                         if(args.length==1){
                             player.sendMessage("Usage: /yeetme persistent <auto/off/mspt-value> ");
                             return true;
@@ -59,9 +58,12 @@ public class YeetCommand implements CommandExecutor, TabCompleter {
                         if(args[1].equalsIgnoreCase("off")){
                             persistency.togglePersitencyYeet(player,-1,false);
                             player.sendMessage("Disabled Persistent Yeet");
+                            yeetablePlayers.remove(player.getUniqueId());
+                            customMsptThresholds.remove(player.getUniqueId());
                         }else if(args[1].equalsIgnoreCase("auto")){
                             persistency.togglePersitencyYeet(player,-1,true);
                             player.sendMessage("Enabled Persistent Yeet");
+                            yeetablePlayers.add(player.getUniqueId());
                         }else{
                             try{
                                 int msptvalue=Integer.parseInt(args[1]);
@@ -70,6 +72,8 @@ public class YeetCommand implements CommandExecutor, TabCompleter {
                                     msptvalue=plugin.getConfig().getInt("kickmspt");
                                 }
                                 persistency.togglePersitencyYeet(player,msptvalue,true);
+                                yeetablePlayers.add(player.getUniqueId());
+                                customMsptThresholds.put(player.getUniqueId(), msptvalue);
                                 player.sendMessage("Enabled Persistent Yeet");
                             } catch (NumberFormatException e) {
                                 player.sendMessage("Usage: /yeetme persistent <auto/off/mspt-value> ");
@@ -78,7 +82,7 @@ public class YeetCommand implements CommandExecutor, TabCompleter {
                         }
                         return true;
                     }
-
+                    yeetablePlayers.add(player.getUniqueId());
                     try {
                         int customMspt = Integer.parseInt(args[0]);
                         if(customMspt>MAXMSPT || customMspt<MINMSPT){
@@ -171,10 +175,10 @@ public class YeetCommand implements CommandExecutor, TabCompleter {
                 List<String> completions = new ArrayList<>();
                 String kickmspt = String.valueOf(plugin.getConfig().getInt("kickmspt", 1));
                 if (args.length == 1) {
-                    completions.add("persistent");
+                    if (plugin.dopersitency) completions.add("persistent");
                     completions.add(kickmspt);
                     completions.add("help");
-                } else if (args.length == 2 && args[0].equalsIgnoreCase("persistent")) {
+                } else if (args.length == 2 && args[0].equalsIgnoreCase("persistent") && plugin.dopersitency) {
                     completions.add("auto");
                     completions.add("off");
                     completions.add(kickmspt);
@@ -190,8 +194,8 @@ public class YeetCommand implements CommandExecutor, TabCompleter {
         // Help message for /yeetme command
         player.sendMessage("§e/yeetme§f - Makes you automatically kickable when the server is lagging(MSPT at "+mspt+").");
         player.sendMessage("§e/yeetme <mspt>§f - Sets a custom MSPT threshold for automatic kicking.");
-        player.sendMessage("§e/yeetme persistent <auto/off/mspt-value>§f - Enables it automatically on login:");
-        player.sendMessage("   §f'auto' - at the default mspt value, 'off' - disables it, or enter a number for a custom MSPT value");
+        if (plugin.dopersitency) player.sendMessage("§e/yeetme persistent <auto/off/mspt-value>§f - Enables it automatically on login:");
+        if (plugin.dopersitency) player.sendMessage("   §f'auto' - at the default mspt value, 'off' - disables it, or enter a number for a custom MSPT value");
         player.sendMessage("§e/yeetme help§f - very secret help message");
         player.sendMessage("§cNote:§f To stop being automatically kickable, use §e/yeetme§f again.");
 }

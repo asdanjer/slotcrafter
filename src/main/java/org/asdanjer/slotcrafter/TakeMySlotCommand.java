@@ -47,7 +47,7 @@ public class TakeMySlotCommand implements CommandExecutor, TabCompleter {
                 return true;
             }
             //persitencycheck
-            if (args[0].equalsIgnoreCase("persistent")) {
+            if (args[0].equalsIgnoreCase("persistent") && plugin.dopersitency) {
                 if (args.length == 1) {
                     player.sendMessage("Usage: /takemyslot persistent <auto/off/delay> ");
                     return true;
@@ -55,9 +55,11 @@ public class TakeMySlotCommand implements CommandExecutor, TabCompleter {
                 if (args[1].equalsIgnoreCase("off")) {
                     persistency.togglePersitencyTakeslot(player, -1, false);
                     player.sendMessage("Disabled Persistent Yeet");
+                    slotOfferedPlayers.remove(playerId);
                 } else if (args[1].equalsIgnoreCase("auto")) {
                     persistency.togglePersitencyTakeslot(player, -1, true);
                     player.sendMessage("Enabled Persistent Yeet");
+                    slotOfferedPlayers.put(playerId, ((long) hours * 3600000) + time);
                 } else {
                     try {
                         int delayTime = Integer.parseInt(args[1]);
@@ -66,6 +68,7 @@ public class TakeMySlotCommand implements CommandExecutor, TabCompleter {
                             delayTime = plugin.getConfig().getInt("defaultTakeMySlotTime");
                         }
                         persistency.togglePersitencyTakeslot(player, delayTime, true);
+                        slotOfferedPlayers.put(playerId, ((long) delayTime * 3600000) + time);
                         player.sendMessage("Enabled Persistent Take Slot");
                     } catch (NumberFormatException e) {
                         player.sendMessage("Usage: /takemyslot persistent <auto/off/delay> ");
@@ -119,10 +122,10 @@ public class TakeMySlotCommand implements CommandExecutor, TabCompleter {
             List<String> completions = new ArrayList<>();
             String defaultTime = String.valueOf(plugin.getConfig().getInt("defaultTakeMySlotTime", 1));
             if (args.length == 1) {
-                completions.add("persistent");
+                if (plugin.dopersitency) completions.add("persistent");
                 completions.add(defaultTime);
                 completions.add("help");
-            } else if (args.length == 2 && args[0].equalsIgnoreCase("persistent")) {
+            } else if (args.length == 2 && args[0].equalsIgnoreCase("persistent") && plugin.dopersitency) {
                 completions.add("auto");
                 completions.add("off");
                 completions.add(defaultTime);
@@ -140,8 +143,8 @@ public class TakeMySlotCommand implements CommandExecutor, TabCompleter {
         // Help message for /takemyslot command
         player.sendMessage("§e/takemyslot§f - Offers your slot after" + hours + " hours.");
         player.sendMessage("§e/takemyslot <hours>§f - Offers your slot after the specified number of hours.");
-        player.sendMessage("§e/takemyslot persistent <auto/off/delay>§f - Enables it automatically on login:");
-        player.sendMessage("   §f'auto' - enables it automatically "+hours+" hours after login, 'off' - disables it, or enter a number for a custom delay");
+        if (plugin.dopersitency) player.sendMessage("§e/takemyslot persistent <auto/off/delay>§f - Enables it automatically on login:");
+        if (plugin.dopersitency) player.sendMessage("   §f'auto' - enables it automatically "+hours+" hours after login, 'off' - disables it, or enter a number for a custom delay");
         player.sendMessage("§e/takemyslot help§f - very secret help message");
         player.sendMessage("§cNote:§f To stop offering your slot, use §e/takemyslot§f again.");    }
 }
