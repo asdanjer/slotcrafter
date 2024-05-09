@@ -37,11 +37,12 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
     private int realplayercap = 0;
     TakeMySlotCommand takeMySlotCommand;
     Persistency persistency;
+    boolean dopersitency = true;
     @Override
     public void onEnable() {
         this.saveDefaultConfig();
         Bukkit.getServer().getPluginManager().registerEvents(this, this);
-
+        dopersitency = getConfig().getBoolean("persistent");
         persistency = new Persistency(this);
         this.yeetCommand = new YeetCommand(this,persistency);
         takeMySlotCommand = new TakeMySlotCommand(this,persistency);

@@ -48,3 +48,5 @@ HighMSPTWarningMessage: "High MSPT. Avoid laggy areas if possible"
 HighMSPTThreshold: 70
 #Message to display when the server is full
 Server_Full_MSG: "Server is full. Please try again later."
+#enable persitent takemyslot and yeetme
+persistent: true
