@@ -2,8 +2,7 @@ package org.asdanjer.slotcrafter;
 
 import org.bukkit.Bukkit;
 
-import java.util.HashSet;
-import java.util.UUID;
+import java.util.*;
 
 public class Info {
     private HashSet yeetlist;
@@ -17,6 +16,7 @@ public class Info {
     private  int Msptcount;
     private HashSet<UUID> yeetablePlayers;
     private String output;
+    private HashMap<UUID, Long> takeMySlotList;
 
 
     public Info(Slotcrafter plugin) {
@@ -64,6 +64,21 @@ public class Info {
                 output += "No Yeetable Players\n";
             }
         }
+        if(takeMySlotList==null){
+            output += "No People offering There Slots\n";
+        }
+        else{
+            if(takeMySlotList.size()>0) {
+                output += "Take My Slot Players: " + takeMySlotList.size() + "\n";
+                long currentTime= System.currentTimeMillis();
+                for (Map.Entry<UUID, Long> player : takeMySlotList.entrySet()) {
+                    output += Bukkit.getOfflinePlayer(player.getKey()).getName() + " - " + (currentTime-player.getValue())/3600000 + "Hours\n";
+                }
+            }
+            else{
+                output += "No People offering There Slots\n";
+            }
+        }
 
 
         return output;
@@ -105,5 +120,7 @@ public class Info {
             return curentMspt;
         }
     }
-
+    public void setTakeMySlotList(HashMap<UUID,Long> takeMySlotList){
+        this.takeMySlotList = takeMySlotList;
+    }
 }

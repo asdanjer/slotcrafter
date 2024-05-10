@@ -146,5 +146,6 @@ public class TakeMySlotCommand implements CommandExecutor, TabCompleter {
         if (plugin.dopersitency) player.sendMessage("§e/takemyslot persistent <auto/off/delay>§f - Enables it automatically on login:");
         if (plugin.dopersitency) player.sendMessage("   §f'auto' - enables it automatically "+hours+" hours after login, 'off' - disables it, or enter a number for a custom delay");
         player.sendMessage("§e/takemyslot help§f - very secret help message");
-        player.sendMessage("§cNote:§f To stop offering your slot, use §e/takemyslot§f again.");    }
+        player.sendMessage("§cNote:§f To stop offering your slot, use §e/takemyslot§f again.");
+    }
 }

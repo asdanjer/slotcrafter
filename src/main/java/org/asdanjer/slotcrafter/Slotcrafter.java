@@ -168,6 +168,7 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
                 adjustPlayerCap(false);
                 yeetCommand.checkyeetability();
                 info.setYeetablePlayers(yeetCommand.getYeetablePlayers());
+                info.setTakeMySlotList(takeMySlotCommand.getSlotOfferedPlayers());
                 clearRecentLeavers();
             }
         }, 0L, 20L * updateInterval);
