@@ -26,7 +26,7 @@ rejoinDelay: 120
 # commands to execute when a player is kicked
 kickCommands:
   - "kick <player> MSPT is too high!"
-  - "say <player> sacrificed himself for the greater good!"
+  - "say <player> sacrificed themself for the greater good!"
 #default time in hours for the takemyslot command (this is the time till the player is flagged to be kickable)
 defaultTakeMySlotTime: 1
 #action bar reminders set to 0 for off
