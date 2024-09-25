@@ -4,7 +4,6 @@ Welcome to the SlotCrafter plugin documentation! This guide provides detailed in
 
 
 - **API Version Required:** `1.20`
-- **Dependencies:** Requires the `spark` plugin.
 
 ## Commands
 
@@ -52,7 +51,7 @@ MSPT = milliseconds per tick
 - `lowerMSPTThreshold`: MSPT threshold below which the plugin will increase the server slots up to `maxSlots`. Above this Threshold the Playercap will stay the same till it hits `upperMSPTThreshold` (Default: `50.0`)
 - `upperMSPTThreshold`: The MSPT threshold above which the plugin will start to reduce the playercap to the players online preventing joining down to `minSlots` (this does not invole kicking just preventing new joins)(Default: `60.0`)
 - `updateInterval`: The time interval in seconds between each automatic update/check by the plugin. (Default: `60`)
-- `averageMSPTInterval`: The time frame in seconds over which the rolling average MSPT is calculated. Set to `0` to use Spark's 1-minute average only. Note that the number of measurements may vary. (Default: `600`)
+- `averageMSPTInterval`: The time frame in seconds over which the rolling average MSPT is calculated. Set to `0` to use 1-minute average only. Note that the number of measurements may vary. (Default: `600`)
 - `autoMode`: Determines whether the plugin starts in automatic mode, adjusting slots based on MSPT. (Default: `true`)
 - `kickmspt`: The MSPT value at which players who have opted in will be kicked. Set to `0` or a negative number to disable this feature. (Default: `70`)
 - `rejoinDelay`: The time people can still rejoin, ignoring player cap after disconnecting/losing connection. (Default: `120`)

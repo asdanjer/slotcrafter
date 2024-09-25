@@ -1,11 +1,4 @@
 package org.asdanjer.slotcrafter;
-
-import me.lucko.spark.api.Spark;
-import me.lucko.spark.api.SparkProvider;
-import me.lucko.spark.api.statistic.StatisticWindow;
-import me.lucko.spark.api.statistic.misc.DoubleAverageInfo;
-import me.lucko.spark.api.statistic.types.GenericStatistic;
-import net.md_5.bungee.chat.SelectorComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -13,6 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -37,9 +31,13 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
     private boolean slotsoppen = true;
     private int realplayercap = 0;
     TakeMySlotCommand takeMySlotCommand;
+    private MsptPuller msptPuller;
+    private boolean paper = false;
+    PaperMspt paperMspt;
     @Override
     public void onEnable() {
         this.saveDefaultConfig();
+        paper = Bukkit.getServer().getName().toLowerCase().contains("paper");
         Bukkit.getServer().getPluginManager().registerEvents(this, this);
         this.yeetCommand = new YeetCommand(this);
         SlotcrafterCommand slotcrafterCommand = new SlotcrafterCommand(this);
@@ -53,7 +51,12 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
         takeMySlotCommand = new TakeMySlotCommand(this);
         getCommand("takemyslot").setExecutor(takeMySlotCommand);
         realplayercap=getConfig().getInt("minSlots");
-
+        if(paper){
+            paperMspt = new PaperMspt(this);
+            getServer().getPluginManager().registerEvents(paperMspt, this);
+        }else{
+        msptPuller = new MsptPuller(this);
+        }
 
         // Schedule repeating task to check MSPT and adjust player cap and yeet people
         manageTaskRunner();
@@ -208,15 +211,10 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
     }
 
     public double getMspt() {
-        Spark spark = SparkProvider.get();
-        GenericStatistic<DoubleAverageInfo, StatisticWindow.MillisPerTick> mspt = spark.mspt();
-
-        if (mspt == null) {
-            logger.info("could not get mspt statistic, returning 1000 as a placeholder value. This is normal on startup.");
-            return 1000;
-        } else {
             // Get the MSPT value and add it to the list with the current timestamp
-            double currentMspt = mspt.poll(StatisticWindow.MillisPerTick.MINUTES_1).mean();
+            double currentMspt;
+            if(!paper)  currentMspt = msptPuller.getmspt();
+            else  currentMspt = paperMspt.getmspt();
             if(getConfig().getInt("averageMSPTInterval")<=0){
                 info.setAverageMode(false);
                 info.setCurentMspt((int) currentMspt);
@@ -226,7 +224,7 @@ public final class Slotcrafter extends JavaPlugin implements Listener {
         return calculateMspt(currentMspt);
 
 
-        }
+
     }
     private double calculateMspt(double currentMspt) {
 
